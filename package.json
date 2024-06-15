@@ -1,0 +1,24 @@
+{
+  "name": "react_learning",
+  "version": "1.0.0",
+  "description": "Fullstack Open Deep Dive Into Modern Web Development course and exercises ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mr-Fred/react_learning.git#fullstackopen_course"
+  },
+  "keywords": [
+    "react",
+    "web development"
+  ],
+  "author": "S. Wilfried Adeniyi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mr-Fred/react_learning/issues"
+  },
+  "homepage": "https://github.com/Mr-Fred/react_learning/tree/fullstackopen_course#readme"
+}
