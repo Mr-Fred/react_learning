@@ -16,7 +16,7 @@ const Button = ({ handleClick, text, className = '' }) => {
 const StatTable = ({data}) => {
   const theadStyle = "border border-slate-300 text-center p-2"
   const tbodyStyle = "border border-slate-300 text-center"
-
+  // console.log(data)
   return (
     <table className='border-collapse border border-slate-400 w-full'>
       <thead>
@@ -26,7 +26,7 @@ const StatTable = ({data}) => {
         </tr>
       </thead>
       <tbody>
-        {data.map(stat =>
+        {data.map(stat => 
         <tr key={stat.text}>
           <td className={tbodyStyle}>{stat.text}</td>
           <td className={tbodyStyle}>{stat.value? stat.value : 0}</td>
@@ -56,11 +56,13 @@ const Statistics = ({data, all}) => {
   )
 }
 
-const Anecdotes = ({anecdotes, selected, setSelected}) => {
-  const [voteReceived, setVoteRecieved] = useState(Array(anecdotes.length).fill(0))
+const Anecdotes = ({anecdotes, selected, setSelected, anecdoteState, setAnecdoteState}) => {
+  // const [voteReceived, setVoteRecieved] = useState(Array(anecdotes.length).fill(0))
 
-  const data = anecdotes.map((text, index) => ({text, value: voteReceived[index]}))
+  // const data = anecdotes.map((text, index) => ({text, value: voteReceived[index]}))
 
+  const data = anecdotes.map((stat, index)=> (
+    {text: stat, value: anecdoteState[index].vote}))
   return(
     <div className='flex flex-col gap-3 items-center mx-auto'>
       <Button handleClick={
@@ -75,14 +77,28 @@ const Anecdotes = ({anecdotes, selected, setSelected}) => {
       <div className='flex flex-row gap-3 items-center'>
         <Button handleClick={
           () => {
-            const newVoteReceived = [...voteReceived]
-            newVoteReceived[selected] += 1
-            setVoteRecieved(newVoteReceived)
+            // let newAnecdoteState = [...anecdoteState]
+            // newAnecdoteState[selected].vote += 1
+            // setAnecdoteState(newAnecdoteState)
+            // console.log(newAnecdoteState)
+
+            setAnecdoteState(anecdoteState.map(
+              (anedocte, index) => {
+                if (index === selected) {
+                  return {
+                    ...anedocte,
+                    vote: anedocte.vote + 1
+                  }
+                }
+                return anedocte
+              }
+            ))
           }} 
           text='vote'
           className='bg-gray-400 text-white font-bold text-2xl font-sans'
         />
-        <p className='text-center text-lg italic font-serif'>has {voteReceived[selected]} votes</p>
+        <p className='text-center text-lg italic font-serif'>has {anecdoteState[selected].vote } votes 
+        </p>
       </div>
       <MostVoted data={data}/>
     </div>
@@ -114,6 +130,17 @@ Anecdotes.propTypes = {
   anecdotes: PropTypes.arrayOf(PropTypes.string).isRequired,
   selected: PropTypes.number.isRequired,
   setSelected: PropTypes.func.isRequired,
+  anecdoteState: PropTypes.arrayOf(PropTypes.shape({
+    good: PropTypes.number,
+    neutral: PropTypes.number,
+    bad: PropTypes.number,
+    all: PropTypes.number,
+    average: PropTypes.number,
+    percentage: PropTypes.number,
+    selected: PropTypes.number,
+    vote: PropTypes.number
+  })).isRequired, 
+  setAnecdoteState: PropTypes.func.isRequired
 }
 
 Statistics.propTypes = {
@@ -143,35 +170,63 @@ StatTable.propTypes = {
 
 const App = () => {
   // save clicks of each button to its own state
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
-  const [all, setAll] = useState(0)
-  const [average, setAverage] = useState(0)
-  const [percentage, setPercentage] = useState(0)
-  const [selected, setSelected] = useState(0)
+  // const [good, setGood] = useState(0)
+  // const [neutral, setNeutral] = useState(0)
+  // const [bad, setBad] = useState(0)
+  // const [all, setAll] = useState(0)
+  // const [average, setAverage] = useState(0)
+  // const [percentage, setPercentage] = useState(0)
+  // const [selected, setSelected] = useState(0)
 
   const anecdotes = [
     'If it hurts, do it more often.',
     'Adding manpower to a late software project makes it later!',
     'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
     'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-    'Premature optimization is the root of all evil.',
-    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
-    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
-    'The only way to go fast, is to go well.'
+    // 'Premature optimization is the root of all evil.',
+    // 'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    // 'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
+    // 'The only way to go fast, is to go well.'
   ]
+  const [selected, setSelected] = useState(0)
+  const [anecdoteState, setAnecdoteState] = useState(Array(anecdotes.length).fill({
+    good: 0,
+    neutral: 0,
+    bad: 0,
+    all: 0,
+    average: 0,
+    percentage: 0,
+    // selected: 0,
+    vote: 0
+  }))
 
-  useEffect(() => {
-    setAll(good + neutral + bad)
-    setAverage((good - bad) / all)
-    setPercentage((good / all) * 100)
-  }, [good, neutral, bad, all])
+  // useEffect(() => {
+  //   setAll(good + neutral + bad)
+  //   setAverage((good - bad) / all)
+  //   setPercentage((good / all) * 100)
+  // }, [good, neutral, bad, all])  
 
+  const updateAnecdoteState = (field) => {
+    setAnecdoteState(anecdoteState.map(
+      (anecdote, index) => {
+        if (index === selected) {
+          return {
+            ...anecdote,
+            [field]: anecdote[field] + 1,
+            all: anecdote.all + 1, // Update 'all' directly
+            average: (anecdote.good - anecdote.bad + (field === 'good' ? 1 : field === 'bad' ? -1 : 0)) / (anecdote.all + 1), // Update 'average' directly
+            percentage: (anecdote.good + (field === 'good' ? 1 : 0)) / (anecdote.all + 1) * 100 // Update 'percentage' directly
+          }
+        }
+        return anecdote
+      }
+    )
+    )
+  }
 
   return (
     <main className='flex items-center justify-center item-center flex-col gap-5 max-w-md m-5 mx-auto'>
-      <Anecdotes 
+      {/* <Anecdotes 
       anecdotes={anecdotes} 
       selected={selected} 
       setSelected={setSelected}
@@ -201,7 +256,48 @@ const App = () => {
         {text: 'all', value: all },
         {text: 'average', value: average},
         {text: 'percentage', value: percentage}
-      ]} all={all}/>
+      ]} all={all}/> */}
+      {/* <p>{anecdoteState[selected].good}</p>
+      <p>{anecdoteState[selected].neutral}</p>
+      <p>{anecdoteState[selected].bad}</p>
+      <p>{anecdoteState[selected].all}</p>
+      <p>{anecdoteState[selected].average}</p>
+      <p>{anecdoteState[selected].percentage}</p> */}
+      <Anecdotes 
+        anecdotes= {anecdotes} 
+        selected= {selected} 
+        setSelected= {setSelected}
+        anecdoteState= {anecdoteState}
+        setAnecdoteState= {setAnecdoteState}
+      />
+
+      <div>
+        <h1 className='text-1xl font-bold m-5'>GIVE FEEDBACK</h1>
+        <Button handleClick={
+            () =>  updateAnecdoteState('good')
+        }
+          text='good'
+        />
+        <Button handleClick={
+          () => updateAnecdoteState('neutral')
+        }
+          text='neutral'
+        />
+        <Button handleClick={
+          () => updateAnecdoteState('bad')
+        }
+          text='bad'
+        />
+      </div>
+
+      <Statistics data={[
+        {text: 'good', value: anecdoteState[selected].good},
+        {text: 'neutral', value: anecdoteState[selected].neutral},
+        {text: 'bad', value: anecdoteState[selected].bad},
+        {text: 'all', value: anecdoteState[selected].all },
+        {text: 'average', value: anecdoteState[selected].average},
+        {text: 'percentage', value: anecdoteState[selected].percentage}
+      ]} all={anecdoteState[selected].all}/>
 
     </main>
   )
