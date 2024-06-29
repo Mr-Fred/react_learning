@@ -1,24 +1,29 @@
 {
-  "name": "react_learning",
-  "version": "1.0.0",
-  "description": "Fullstack Open Deep Dive Into Modern Web Development course and exercises ",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "name": "unicafe",
+  "private": true,
+  "version": "0.0.0",
   "type": "module",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Mr-Fred/react_learning.git#fullstackopen_course"
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
-  "keywords": [
-    "react",
-    "web development"
-  ],
-  "author": "S. Wilfried Adeniyi",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Mr-Fred/react_learning/issues"
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
-  "homepage": "https://github.com/Mr-Fred/react_learning/tree/fullstackopen_course#readme"
+  "devDependencies": {
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.6",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "vite": "^5.2.0"
+  }
 }
