@@ -1,4 +1,4 @@
-import React from 'react'
+import propTypes from 'prop-types'
 
 const Filter = ({handleSearch, searchResults}) => {
   return (
@@ -26,5 +26,11 @@ const Filter = ({handleSearch, searchResults}) => {
   </div>
   )
 }
+
+Filter.propTypes = {
+  handleSearch: propTypes.func.isRequired,
+  searchResults: propTypes.array.isRequired
+}
+
 
 export default Filter
