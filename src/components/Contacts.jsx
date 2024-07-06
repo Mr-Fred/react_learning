@@ -1,4 +1,6 @@
-import React from 'react'
+import propTypes from 'prop-types';
+
+
 
 const Contacts = ({phonebook}) => {
   return (
@@ -16,6 +18,10 @@ const Contacts = ({phonebook}) => {
     </ul>
   </div>
   )
+}
+
+Contacts.propTypes = {
+  phonebook: propTypes.array.isRequired
 }
 
 export default Contacts

@@ -1,4 +1,5 @@
-import React from 'react'
+import propTypes from 'prop-types'
+
 
 const ContactForm = ({newName, newNumber, handleNameChange, handleNumberChange, handleFormSubmission}) => {
   return (
@@ -40,5 +41,14 @@ const ContactForm = ({newName, newNumber, handleNameChange, handleNumberChange, 
   </div>
   )
 }
+
+ContactForm.propTypes = {
+  newName: propTypes.string,
+  newNumber: propTypes.string,
+  handleNameChange: propTypes.func,
+  handleNumberChange: propTypes.func,
+  handleFormSubmission: propTypes.func
+}
+
 
 export default ContactForm

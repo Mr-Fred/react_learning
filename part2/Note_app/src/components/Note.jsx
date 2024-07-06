@@ -1,9 +1,19 @@
-import React from 'react'
 import propTypes from 'prop-types';
 
-const Note = ({ note }) => {
+const Note = ({ note, toggleImportance }) => {
+  const label = note.important
+  ? "make not important"
+  : "make important";
+
+
   return (
-    <li className='p-2 rounded-md shadow-sm hover:bg-gray-100'>{note.content}</li>  
+    <>
+     <li className='p-2 rounded-md shadow-sm hover:bg-gray-100'>
+      {note.content} || 
+      <button onClick={toggleImportance}>{label}</button>
+    </li>
+    </>
+   
   )
 }
 
@@ -13,6 +23,7 @@ Note.propTypes = {
     content: propTypes.string.isRequired,
     important: propTypes.bool.isRequired,
   })).isRequired,
+  toggleImportance: propTypes.func.isRequired,
   // className: propTypes.string.isRequired
 }
 
