@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Contacts from './components/Contacts'
 import ContactForm from './components/ContactForm'
 import Filter from './components/Filter'
-import { areTheTwoObjEqual } from './lib/utilities'
+// import { areTheTwoObjEqual } from './lib/utilities'
 import contactService from './lib/phonebook'
 
 
@@ -52,31 +52,146 @@ const App = () => {
 
   const handleFormSubmission = (event) => {
     event.preventDefault()
+
     const phonebookObject = {
       name: newName,
       number: newNumber
     }
-    // let's check if the new entry already exist
-    const isEntryExist = phonebook.some(
-      person => areTheTwoObjEqual(person, phonebookObject)
-    )
-    
-    if(isEntryExist){
-      alert(`${newName} is already in the phonebook`);
-      return;
-    } else {
-      contactService
-        .addNewContact(phonebookObject)
-        .then(newContact => {
-          setPhonebook(phonebook.concat(newContact))
-          setNewName('')
-          setNewNumber('')
-        })
-        .catch(error => {
-          console.log(error)
-        })
-    }
 
+    // let's check if the new entry already exist then update or add new entry to the database
+    phonebook.find(
+      person => {
+        if (person.name === newName && person.number === newNumber) {
+          alert(`${newName} is already in the phonebook. Cancelling operation`);
+          return; // Exact Match - Cancel
+        } else if (person.name === newName && person.number !== newNumber) {
+          const update = window.confirm(
+            `${newName} is already in the phonebook, replace the old number with a new one?`
+          );
+          return update
+          ? contactService
+              .updateContact(person.id, phonebookObject)
+              // eslint-disable-next-line no-unused-vars
+              .then( newContact => {
+                contactService.getAllContacts()
+                .then(contacts => {
+                  setPhonebook(contacts)
+                })
+                .catch(error => {
+                  console.log(error)
+                })
+                setNewName('')
+                setNewNumber('')
+              })
+              
+              .catch(
+                error => {
+                  console.log(error)
+                }
+              )
+          : window.confirm(
+            `There is a contact with name ${newName}. Do you want to add a new contact with the same name?`
+          )
+          ? contactService
+              .addNewContact(phonebookObject)
+              .then(newContact => {
+                setPhonebook(phonebook.concat(newContact))
+                setNewName('')
+                setNewNumber('')
+              })
+              .catch(error => {
+                console.log(error)
+              })
+          : alert(`${newName} is already in the phonebook. Cancelling operation`);
+        }
+ 
+      }
+    );
+    setNewName('')
+    setNewNumber('')
+    // Temporary solution to validate and update or add new entry to the database
+    // if(isEntryExist.at(-1) === 'cancel'){
+    //   alert(`${newName} is already in the phonebook. Cancelling operation`);
+    //   return;
+    // } else if(isEntryExist.at(-1) === 'update') {
+    //   contactService
+    //     .updateContact(phonebookObject)
+    //     .then(newContact => {
+    //       setPhonebook(phonebook.concat(newContact))
+    //       setNewName('')
+    //       setNewNumber('')
+    //     })
+    //     .catch(
+    //       error => {
+    //         console.log(error)
+    //       }
+    //     )
+    // } else {
+    //   contactService
+    //     .addNewContact(phonebookObject)
+    //     .then(newContact => {
+    //       setPhonebook(phonebook.concat(newContact))
+    //       setNewName('')
+    //       setNewNumber('')
+    //     })
+    //     .catch(error => {
+    //       console.log(error)
+    //     })
+    // }
+
+    // if (existingEntry) {
+    //   // Existing entry found, handle based on returned value
+    //   if (existingEntry === true) { // Exact Match (returned true)
+    //     alert(`${newName} is already in the phonebook. Cancelling operation`);
+    //   } else if (existingEntry === 'update') {
+    //     // Update existing contact
+    //     contactService
+    //       .updateContact(phonebookObject)
+    //       .then(updatedContact => {
+    //         // Update phonebook state with updated contact
+    //         setPhonebook(phonebook.map(contact => (contact.id === updatedContact.id ? updatedContact : contact)));
+    //         setNewName('');
+    //         setNewNumber('');
+    //       })
+    //       .catch(error => console.error(error));
+    //   } else { // existingEntry === 'continue' (Add new contact with same name)
+    //     // Add new contact
+    //     contactService
+    //       .addNewContact(phonebookObject)
+    //       .then(newContact => {
+    //         setPhonebook(phonebook.concat(newContact));
+    //         setNewName('');
+    //         setNewNumber('');
+    //       })
+    //       .catch(error => console.error(error));
+    //   }
+    // } else {
+    //   // No existing entry, add new contact
+    //   contactService
+    //     .addNewContact(phonebookObject)
+    //     .then(newContact => {
+    //       setPhonebook(phonebook.concat(newContact));
+    //       setNewName('');
+    //       setNewNumber('');
+    //     })
+    //     .catch(error => console.error(error));
+    // }
+
+  }
+
+  const deleteContact = (id, name) => {
+    if(window.confirm(`Are you sure you want to delete ${name}?`)){
+      contactService
+      .deleteContact(id)
+      .catch(
+        error => {
+          console.log(error)
+        }
+      )
+    setPhonebook(phonebook.filter(
+      person => person.id !== id
+    ))
+    }
   }
 
   return (
@@ -95,7 +210,9 @@ const App = () => {
         newName={newName}
         newNumber={newNumber}
       />
-      <Contacts phonebook={phonebook} />
+      <Contacts 
+        deletePerson={deleteContact}
+        phonebook={phonebook} />
       <div>debug: {newName}</div>
     </div>
   )   
