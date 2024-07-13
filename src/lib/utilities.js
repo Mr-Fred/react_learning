@@ -3,15 +3,18 @@
 function areTheTwoObjEqual(obj1, obj2) {
   'use strict'
   
+  
   // verify if obj are empty and if either variable is empty
   // we can instantly compare them and check for equality.
   if (Object.keys(obj1).length === 0 && Object.keys(obj2).length === 0) {
     return true
   }
+  
   // Check if obj constructors are equal. If true both obj must be of same type.
   if (obj1.constructor !== obj2.constructor) {
     return false
   }
+
   //check what type one of the objects is, and then compare them
   if (obj1 instanceof Function || obj1 instanceof RegExp) {
     return obj1 === obj2

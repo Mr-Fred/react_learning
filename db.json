@@ -23,11 +23,6 @@
   ],
   "phonebook": [
     {
-      "name": "Arto Hellas",
-      "number": "040-123456",
-      "id": "1"
-    },
-    {
       "name": "Ada Lovelace",
       "number": "39-44-5323523",
       "id": "2"
@@ -43,9 +38,14 @@
       "id": "4"
     },
     {
-      "id": "1013",
+      "id": "7434",
+      "name": "Arto Hellas",
+      "number": "0921 678 2345"
+    },
+    {
       "name": "Alapini",
-      "number": "0930 285 7443"
+      "number": "0930 285 744",
+      "id": "1ed8"
     }
   ]
 }
