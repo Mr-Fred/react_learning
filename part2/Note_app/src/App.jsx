@@ -2,13 +2,15 @@ import Note from "./components/Note"
 import { useState, useEffect } from "react"
 
 import noteService from './services/notes'
-
+import Notification from "./components/Notification"
+import Footer from "./components/Footer"
 
 
 const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('a new note...') 
   const [showAll, setShowAll] = useState(true)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   // const hook = () => {
   //   axios
@@ -60,17 +62,22 @@ const App = () => {
       .then(returnedNote => {
         setNotes(notes.map(note => note.id !== id ? note : returnedNote))
       })
+      // eslint-disable-next-line no-unused-vars
       .catch(error => {
-        alert(
+        setErrorMessage(
           `Note '${note.content}' was already removed from server`
         )
-        setNotes(notes.filter(n => n.id !== id))
-        console.log(error)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
       })
   }
   return (
     <div className="container flex flex-col items-center justify-center w-3/4 mx-auto my-10 p-6 rounded-lg shadow-md bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Notes</h1>
+
+      <Notification message={errorMessage} />
+
       <div className="note-list w-full text-center">
         <button
           className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-4 mb-3 rounded-full shadow-md transition duration-300"
@@ -102,9 +109,10 @@ const App = () => {
           />
           <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" type="submit">save</button>
       </form>
+      <Footer />
     </div>
   )
-    
+  
 }
   
 export default App
