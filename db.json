@@ -23,11 +23,6 @@
   ],
   "phonebook": [
     {
-      "name": "Ada Lovelace",
-      "number": "39-44-5323523",
-      "id": "2"
-    },
-    {
       "name": "Dan Abramov",
       "number": "12-43-234345",
       "id": "3"
@@ -43,9 +38,9 @@
       "number": "0921 678 2345"
     },
     {
-      "name": "Alapini",
-      "number": "0930 285 744",
-      "id": "1ed8"
+      "id": "3469",
+      "name": "Ada Lovelace",
+      "number": "0930 285 744"
     }
   ]
 }

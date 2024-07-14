@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Contacts from './components/Contacts'
 import ContactForm from './components/ContactForm'
 import Filter from './components/Filter'
+import Notification from './components/Notification'
 // import { areTheTwoObjEqual } from './lib/utilities'
 import contactService from './lib/phonebook'
 
@@ -17,6 +18,11 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [searchResults, setSearchResults] = useState([])
+  const [notification, setNotification] = useState({
+    message: '',
+    type: ''
+  })
+
 
   useEffect(() => {
     contactService
@@ -27,14 +33,14 @@ const App = () => {
       }
     )
     .catch(error => {
-      console.log(error)
+      displayNotif(error.message, 'error')
     })
   }, [])
-
 
   const handleNameChange = (event) => {
     setNewName(event.target.value)
   }
+
   const handleNumberChange = (event) => {
     setNewNumber(event.target.value)
   }
@@ -46,8 +52,20 @@ const App = () => {
           person => person.name.toLowerCase().includes(event.target.value.toLowerCase())
       ) 
       )
-    // else
-    //   setSearchResults([])
+  }
+
+  const displayNotif = (message, type) => {
+    const notifObject = {
+      message: message,
+      type: type
+    }
+    setNotification(notifObject)
+    setTimeout(() => {
+      setNotification({
+        message: '',
+        type: ''
+      })
+    }, 5000)
   }
 
   const handleFormSubmission = (event) => {
@@ -58,134 +76,112 @@ const App = () => {
       number: newNumber
     }
 
-    // let's check if the new entry already exist then update or add new entry to the database
-    phonebook.find(
-      person => {
-        if (person.name === newName && person.number === newNumber) {
-          alert(`${newName} is already in the phonebook. Cancelling operation`);
-          return; // Exact Match - Cancel
-        } else if (person.name === newName && person.number !== newNumber) {
-          const update = window.confirm(
-            `${newName} is already in the phonebook, replace the old number with a new one?`
-          );
-          return update
-          ? contactService
-              .updateContact(person.id, phonebookObject)
-              // eslint-disable-next-line no-unused-vars
-              .then( newContact => {
-                contactService.getAllContacts()
-                .then(contacts => {
-                  setPhonebook(contacts)
+    let addNewContact = true;
+
+    // Temporary solution. let's check if the new entry already exist then update or add new entry to the database
+    contactService.getAllContacts().then(contacts => {
+      contacts.some(
+        person => {
+          if (person.name === newName && person.number === newNumber) {
+            displayNotif(`${newName} is already in the phonebook. Cancelling operation`, 'error')
+            addNewContact = false; // Exact Match - Cancel
+            return true;
+          }
+          else if (person.name === newName && person.number !== newNumber) {
+            const update = window.confirm(
+              `${newName} is already in the phonebook, replace the old number with a new one?`
+            );
+            update
+            ? contactService
+                .updateContact(person.id, phonebookObject)
+                .then( () => {
+                  contactService.getAllContacts()
+                  .then(contacts => {
+                    setPhonebook(contacts)
+                  })
+                  .catch(error => {
+                    displayNotif(error.message, 'error')
+                    setPhonebook.filter(
+                      person => person.id !== person.id
+                    )
+                  })
+                  setNewName('')
+                  setNewNumber('')
+                  displayNotif(`${newName}'s number has been successfully updated to ${newNumber}`, 'success')
+                  addNewContact = false
+                })
+                .catch(
+                  error => {
+                    displayNotif(error.message, 'error')
+                    addNewContact = false
+                  }
+                )
+            : window.confirm(`There is a contact with name ${newName}. Do you want to add a new contact with the same name?`)
+            ? contactService
+                .addNewContact(phonebookObject)
+                .then(newContact => {
+                  setPhonebook(phonebook.concat(newContact))
+                  setNewName('')
+                  setNewNumber('')
+                  displayNotif(`${newName} has been successfully added to the phonebook`, 'success')
+                  addNewContact = false
                 })
                 .catch(error => {
-                  console.log(error)
+                  displayNotif(error.message)
+                  addNewContact = false
                 })
-                setNewName('')
-                setNewNumber('')
-              })
-              
-              .catch(
-                error => {
-                  console.log(error)
-                }
-              )
-          : window.confirm(
-            `There is a contact with name ${newName}. Do you want to add a new contact with the same name?`
-          )
-          ? contactService
-              .addNewContact(phonebookObject)
-              .then(newContact => {
-                setPhonebook(phonebook.concat(newContact))
-                setNewName('')
-                setNewNumber('')
-              })
-              .catch(error => {
-                console.log(error)
-              })
-          : alert(`${newName} is already in the phonebook. Cancelling operation`);
+            : displayNotif(`${newName} is already in the phonebook. Cancelling operation`, 'error');
+            addNewContact = false
+            return true;
+          } 
+          else if(person.name !== newName && person.number === newNumber){
+            displayNotif(`${newNumber} is already in the phonebook. Cancelling operation`, 'error')
+            addNewContact = false; // Number Match - Cancel
+            return true;
+          }
+          else{
+            return false;
+          }
         }
- 
+      );
+
+      if (addNewContact === true) {
+        console.log(addNewContact)
+        contactService
+        .addNewContact(phonebookObject)
+        .then(newContact => {
+          setPhonebook(phonebook.concat(newContact))
+          setNewName('')
+          setNewNumber('')
+          displayNotif(`${newName} has been successfully added to the phonebook`, 'success')
+        })
+        .catch(error => {
+          displayNotif(error.message, 'error')
+        })
       }
-    );
-    setNewName('')
-    setNewNumber('')
-    // Temporary solution to validate and update or add new entry to the database
-    // if(isEntryExist.at(-1) === 'cancel'){
-    //   alert(`${newName} is already in the phonebook. Cancelling operation`);
-    //   return;
-    // } else if(isEntryExist.at(-1) === 'update') {
-    //   contactService
-    //     .updateContact(phonebookObject)
-    //     .then(newContact => {
-    //       setPhonebook(phonebook.concat(newContact))
-    //       setNewName('')
-    //       setNewNumber('')
-    //     })
-    //     .catch(
-    //       error => {
-    //         console.log(error)
-    //       }
-    //     )
-    // } else {
-    //   contactService
-    //     .addNewContact(phonebookObject)
-    //     .then(newContact => {
-    //       setPhonebook(phonebook.concat(newContact))
-    //       setNewName('')
-    //       setNewNumber('')
-    //     })
-    //     .catch(error => {
-    //       console.log(error)
-    //     })
-    // }
-
-    // if (existingEntry) {
-    //   // Existing entry found, handle based on returned value
-    //   if (existingEntry === true) { // Exact Match (returned true)
-    //     alert(`${newName} is already in the phonebook. Cancelling operation`);
-    //   } else if (existingEntry === 'update') {
-    //     // Update existing contact
-    //     contactService
-    //       .updateContact(phonebookObject)
-    //       .then(updatedContact => {
-    //         // Update phonebook state with updated contact
-    //         setPhonebook(phonebook.map(contact => (contact.id === updatedContact.id ? updatedContact : contact)));
-    //         setNewName('');
-    //         setNewNumber('');
-    //       })
-    //       .catch(error => console.error(error));
-    //   } else { // existingEntry === 'continue' (Add new contact with same name)
-    //     // Add new contact
-    //     contactService
-    //       .addNewContact(phonebookObject)
-    //       .then(newContact => {
-    //         setPhonebook(phonebook.concat(newContact));
-    //         setNewName('');
-    //         setNewNumber('');
-    //       })
-    //       .catch(error => console.error(error));
-    //   }
-    // } else {
-    //   // No existing entry, add new contact
-    //   contactService
-    //     .addNewContact(phonebookObject)
-    //     .then(newContact => {
-    //       setPhonebook(phonebook.concat(newContact));
-    //       setNewName('');
-    //       setNewNumber('');
-    //     })
-    //     .catch(error => console.error(error));
-    // }
-
+      setNewName('')
+      setNewNumber('')
+    })
+    // End of temporary solution
   }
 
   const deleteContact = (id, name) => {
     if(window.confirm(`Are you sure you want to delete ${name}?`)){
       contactService
       .deleteContact(id)
+      .then(
+        () => {
+          displayNotif(`${name} has been successfully deleted from the phonebook`, 'success')
+        }
+      )
       .catch(
         error => {
-          console.log(error)
+          if(error.response.status === 404){
+            displayNotif(`Info on ${name} has already been deleted from the phonebook`, 'error')
+          }
+          else{
+            displayNotif(error.message, 'error')
+          }
         }
       )
     setPhonebook(phonebook.filter(
@@ -199,6 +195,7 @@ const App = () => {
       <h2 className="text-5xl my-5 font-bold uppercase tracking-wide bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text py-2">
       Phonebook
       </h2>
+      <Notification message={notification.message} type={notification.type} />
       <Filter 
         handleSearch={handleSearch}
         searchResults={searchResults}

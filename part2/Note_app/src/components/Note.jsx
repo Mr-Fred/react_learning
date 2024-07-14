@@ -8,7 +8,7 @@ const Note = ({ note, toggleImportance }) => {
 
   return (
     <>
-     <li className='p-2 rounded-md shadow-sm hover:bg-gray-100'>
+     <li className='p-2 font-bold rounded-md shadow-sm hover:bg-gray-100'>
       {note.content} || 
       <button onClick={toggleImportance}>{label}</button>
     </li>
