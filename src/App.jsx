@@ -3,15 +3,21 @@ import { useDebouncedCallback } from "use-debounce";
 import Fuse from "fuse.js";
 
 import SearchBar from "./components/SearchBar";
-import CountriesList from "./components/CountriesList";
+import CountriesListItem from "./components/CountriesListItem";
+import Country from "./components/Country";
 
 import countries from "./api/countries";
-import helpers from './utilities/utilties'
+import helpers from './utilities/utilities'
 
 const App = () => {
   const [query, setQuery] = useState('');
   const [data, setData] = useState([])
   const [searchResults, setSearchResults] = useState([])
+  const [showCountry, setShowCountry] = useState({
+    show: false,
+    data: [{}]
+  });
+
 
   // Use useEffect to fetch data from the API. This will run when the component mounts.
   useEffect(
@@ -27,7 +33,7 @@ const App = () => {
     []
   )
 
-  const countriesName = useMemo(
+  const countriesData = useMemo(
     () => helpers.extractCountryInfo(data),
     [data]
   );
@@ -41,7 +47,7 @@ const App = () => {
       return;
     } else {
       const fuse = new Fuse(
-          countriesName,
+          countriesData,
           {
             keys: ['official', 'common', 'capital', 'nativeName'],
             threshold: 0.1,
@@ -50,10 +56,20 @@ const App = () => {
           }
       );
       setSearchResults(
-          fuse.search(searchTerm).map(result => result.item.official)
+        fuse.search(searchTerm).map(result => result.item.official)
       );
     }
   }, 200);
+
+  const showCountryData = (countryName) => {
+    setShowCountry({
+      ...showCountry,
+      show: true,
+      data: countriesData.filter(
+        country => country.official === countryName
+      )
+    })
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100"> {/* Overall layout */}
@@ -70,13 +86,32 @@ const App = () => {
 
       {/* Results Section */}
       <section className="flex-grow p-4"> 
-        {/* Results will be displayed here */}
-        <CountriesList countriesName={searchResults}/>
+      {/* Results will be displayed here */}
+        { 
+          searchResults.length < 1 
+            ? (<p className='text-center'>Search a country name to view its Informations</p>)
+            : searchResults.length === 1
+            ? <Country data={countriesData.filter(
+              country => country.official === searchResults[0]
+            )}/>
+            : searchResults.length > 10 
+            ? (<p>Too many results, please refine your search</p>)
+            : <ul>
+            {searchResults.map((country) => (
+              <CountriesListItem  key={country}  country={country} handleClick={showCountryData} />
+            ))}
+              </ul>
+        }
+      </section>
+      <section className="flex-grow p-4">
+        {
+          showCountry.show && <Country data={showCountry.data}/>
+        }
       </section>
 
       {/* Footer Section */}
       <footer className="bg-blue-500 p-4 text-white text-center text-sm">
-        <p>&copy; 2023 Fred</p>
+        <p>&copy; 2024 Fred</p>
       </footer>
 
     </div>
