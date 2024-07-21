@@ -1,5 +1,5 @@
 import React from 'react'
-import propType from 'prop-types'
+import propTypes from 'prop-types'
 
 function SearchBar({query, setQuery, handleSearch}) {
   return (
@@ -26,10 +26,10 @@ function SearchBar({query, setQuery, handleSearch}) {
   )
 }
 
-SearchBar.prototype = {
-  query: propType.string,
-  setQuery: propType.func,
-  handleSearch: propType.func
+SearchBar.propTypes = {
+  query: propTypes.string,
+  setQuery: propTypes.func,
+  handleSearch: propTypes.func
 }
 
 export default SearchBar

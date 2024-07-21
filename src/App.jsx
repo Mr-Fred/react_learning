@@ -6,7 +6,6 @@ import SearchBar from "./components/SearchBar";
 import CountriesList from "./components/CountriesList";
 
 import countries from "./api/countries";
-
 import helpers from './utilities/utilties'
 
 const App = () => {
@@ -36,14 +35,6 @@ const App = () => {
   // add a delay between search requests to avoid unnecessary calls
   const handleSearch = useDebouncedCallback((searchTerm) => {
 
-    // if(!searchTerm) {
-    //   setQuery('');
-    //   return;
-    // }
-
-    // Perform search logic here
-    // setQuery(searchTerm);
-
     // fuzzy matching to get more accurate results
     if(!searchTerm) {
       setSearchResults([]);
@@ -64,21 +55,6 @@ const App = () => {
     }
   }, 200);
 
-  useEffect(() => {
-    handleSearch(query);
-  }, [query]);
-
-    // setSearchResults(searchTerm
-    //   && useDebouncedCallback(
-    //     () => {
-    //       countriesName.filter(country => 
-    //         country.toLowerCase().startsWith(query.toLowerCase())
-    //       )
-    //     },
-    //     500
-    //   ))
-  // };
-
   return (
     <div className="min-h-screen flex flex-col bg-gray-100"> {/* Overall layout */}
 
@@ -95,17 +71,7 @@ const App = () => {
       {/* Results Section */}
       <section className="flex-grow p-4"> 
         {/* Results will be displayed here */}
-        {
-          searchResults.length < 1 ?
-            <p>Search a country name to view its Informations</p>
-            :
-            <ul>
-              {searchResults.map((country) => (
-                <li key={country}>{country}</li>
-              ))}
-            </ul>
-        }
-        <CountriesList />
+        <CountriesList countriesName={searchResults}/>
       </section>
 
       {/* Footer Section */}
