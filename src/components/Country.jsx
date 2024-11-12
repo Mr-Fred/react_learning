@@ -23,7 +23,7 @@ const Country = ({ data }) => {
         /> 
       </div>
       <div className="flex items-center mb-4">
-        <Flag  className="w-10 h-6 mr-2" /> {/* Replace with actual flag component or image */}
+        <Flag  className="w-10 h-6 mr-2 text-gray-500" /> {/* Replace with actual flag component or image */}
         <h2 className="text-xl font-bold"><span className="text-blue-500 font-bold">{country.official}</span></h2>
       </div>
 
