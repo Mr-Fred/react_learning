@@ -22,4 +22,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-../task_mgt_dashboard.html
+./task_mgt_dashboard.html
+*.idx
