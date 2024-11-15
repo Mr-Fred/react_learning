@@ -1,7 +1,7 @@
 // eslint-disable-next-line no-undef
-let contacts = require('./db')
+let contacts = require('../utilities/db')
 // eslint-disable-next-line no-undef
-const generateId = require('./utils')
+const generateId = require('../utilities/utils')
 
 const get_phonebook = (request, response) => {
   response.json(contacts)

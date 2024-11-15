@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-undef
-const persons = require('./db')
+const persons = require('./utilities/db')
 
 const get_info = (req, res) => {
   req.reqTime = new Date();

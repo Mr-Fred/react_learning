@@ -1,0 +1,37 @@
+{
+  "name": "notes-backend-server",
+  "version": "1.0.0",
+  "description": "Serve notes to frontend client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "rm -rf dist && cd ../../part2/notes_frontend/ && npm run build && cp -r dist ../../part3/notes_backend",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",    
+    "logs:prod": "fly logs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mr-Fred/react_learning.git#fullstackopen_course"
+  },
+  "keywords": [
+    "express",
+    "nodejs",
+    "javascript",
+    "webserver"
+  ],
+  "author": "Fred Adeniyi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mr-Fred/react_learning/issues"
+  },
+  "homepage": "https://github.com/Mr-Fred/react_learning/tree/fullstackopen_course#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.5.9"
+  }
+}
