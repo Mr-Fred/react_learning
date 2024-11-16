@@ -4,12 +4,10 @@ const Note = ({ note, toggleImportance }) => {
   const label = note.important
   ? "make not important"
   : "make important";
-
-
   return (
     <>
      <li className='p-2 font-bold rounded-md shadow-sm hover:bg-gray-100'>
-      {note.content} || 
+      {note.content} ||    
       <button onClick={toggleImportance}>{label}</button>
     </li>
     </>
