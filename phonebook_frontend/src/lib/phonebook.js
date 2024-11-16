@@ -27,5 +27,4 @@ const updateContact = async (id, contactObject) => {
   return response.data;
 }
 
-
 export default { getAllContacts, addNewContact, deleteContact, updateContact}

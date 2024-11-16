@@ -16,11 +16,11 @@ const Note = ({ note, toggleImportance }) => {
 }
 
 Note.propTypes = {
-  note: propTypes.objectOf(propTypes.shape({
-    id: propTypes.number.isRequired,
+  note: propTypes.shape({
+    id: propTypes.string.isRequired,
     content: propTypes.string.isRequired,
     important: propTypes.bool.isRequired,
-  })).isRequired,
+  }).isRequired,
   toggleImportance: propTypes.func.isRequired,
   // className: propTypes.string.isRequired
 }

@@ -31,6 +31,7 @@
   "homepage": "https://github.com/Mr-Fred/react_learning/tree/fullstackopen_course#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "mongoose": "^8.8.1",
     "morgan": "^1.10.0"
