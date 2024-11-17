@@ -1,15 +1,15 @@
-# fly.toml app configuration file generated for fullstackopen-phonebook-part3-app on 2024-11-15T07:00:02+08:00
+# fly.toml app configuration file generated for phonebook-fullstack-cool-dust-5319 on 2024-11-17T16:46:16+08:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = 'fullstackopen-phonebook-part3-app'
-primary_region = 'hkg'
+app = 'phonebook-fullstack-cool-dust-5319'
+primary_region = 'sin'
 
 [build]
 
 [env]
-  PORT = '3000'
+  PORT="3000"
 
 [http_service]
   internal_port = 3000

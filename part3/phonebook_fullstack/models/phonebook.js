@@ -20,8 +20,21 @@ mongoose.connect(url)
   )
 
 const contactSchema = mongoose.Schema({
-  name: String,
-  number: Number
+  name: {
+    type: String,
+    minlength: 3,
+    required: true
+  },
+  number: {
+    type: String,
+    validate: {
+      validator: function(v){
+        return /\d{3,4}-\d{3}-\d{4}/.test(v) || /\d{3,4} \d{3} \d{4}/.test(v);
+      },
+      message: props => `${props.value} is not a valid phone number!\nValid format: 000-0000000`
+    },
+    required: [true, 'User phone number required']
+  }
 })
 
 contactSchema.set('toJSON', {

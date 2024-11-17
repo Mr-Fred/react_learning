@@ -18,7 +18,11 @@ mongoose.connect(url)
   })
 
 const noteSchema = new mongoose.Schema({
-  content: String,
+  content: {
+    type: String,
+    minlength: 5,
+    required: true
+  },
   important: Boolean,
 })
 
@@ -32,34 +36,3 @@ noteSchema.set('toJSON', {
 
 // eslint-disable-next-line no-undef
 module.exports = mongoose.model('Note', noteSchema)
-
-// function fetchAllNotes(){
-//   try {
-//     Note.find({}).then(result => {
-//       console.log(result)
-//       mongoose.connection.close()
-//     })
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
-
-// async function saveNote(){
-//   // eslint-disable-next-line no-unused-vars
-//   const note = new Note({
-//   content: 'HTML is easy',
-//   important: true,
-// })
- 
-//   const result = await note.save();
-//   console.log(result)
-//   await mongoose.connection.close()
-// }
-
-// // eslint-disable-next-line no-undef
-// module.exports = {
-//   fetchAllNotes,
-//   saveNote
-// }
-
-

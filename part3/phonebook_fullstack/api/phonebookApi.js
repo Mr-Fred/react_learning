@@ -3,11 +3,12 @@ const Contact = require('../models/phonebook')
 // eslint-disable-next-line no-undef
 
 
-const get_phonebook = (request, response) => {
+const get_phonebook = (request, response, next) => {
   Contact.find({})
     .then( contacts => {
       response.json(contacts)
     })
+    .catch( error => next(error))
 }
 
 const get_contact = (request, response, next) => {
@@ -22,36 +23,25 @@ const get_contact = (request, response, next) => {
     .catch( error => next(error))
 }
 
-const post_contact = (request, response) => {
+const post_contact = (request, response, next) => {
   const body = request.body
-
-  if(typeof(body.number) === 'string'){
-    body.number = Number(body.number.replace(/\D/g,""))
-  }
   
   if(!body.name || !body.number) {
     return response.status(400).json({
       error: "name and/or number is required"
     })
   }
+
+  const newContact = new Contact({
+    name: body.name,
+    number: body.number
+  })
   
-  Contact.findOne({$or: [{name: body.name}, {number: body.number}]})
-    .then(contact => {
-      if(contact){
-        return response.status(400).json({
-          error: "name or number already exists"
-        })
-      } else { 
-        const newContact = new Contact({
-          name: body.name,
-          number: body.number
-        })
-        return newContact.save();
-      }
-    })
+  newContact.save()
     .then( savedContact => {
       response.json(savedContact)
     })
+    .catch(error => next(error))
 }
 
 const delete_contact = (request, response, next) => {
@@ -70,7 +60,7 @@ const update_contact = (request, response, next) => {
     name: body.name,
     number: body.number
   }
-  Contact.findByIdAndUpdate(id, contact, {new: true})
+  Contact.findByIdAndUpdate(id, contact, {new: true, runValidators: true, context: 'query'})
     .then(updatedContact => {
       response.json(updatedContact)
     })

@@ -65,7 +65,7 @@ const App = () => {
         message: '',
         type: ''
       })
-    }, 5000)
+    }, 15000)
   }
 
   const handleFormSubmission = (event) => {
@@ -100,7 +100,7 @@ const App = () => {
                     setPhonebook(contacts)
                   })
                   .catch(error => {
-                    displayNotif(error.message, 'error')
+                    displayNotif(error.response.data.error, 'error')
                     setPhonebook.filter(
                       person => person.id !== person.id
                     )
@@ -112,7 +112,7 @@ const App = () => {
                 })
                 .catch(
                   error => {
-                    displayNotif(error.message, 'error')
+                    displayNotif(error.response.data.error, 'error')
                     addNewContact = false
                   }
                 )
@@ -127,7 +127,7 @@ const App = () => {
                   addNewContact = false
                 })
                 .catch(error => {
-                  displayNotif(error.message)
+                  displayNotif(error.response.data.error, 'error')
                   addNewContact = false
                 })
             : displayNotif(`${newName} is already in the phonebook. Cancelling operation`, 'error');
@@ -146,7 +146,6 @@ const App = () => {
       );
 
       if (addNewContact === true) {
-        console.log(addNewContact)
         contactService
         .addNewContact(phonebookObject)
         .then(newContact => {
@@ -156,7 +155,7 @@ const App = () => {
           displayNotif(`${newName} has been successfully added to the phonebook`, 'success')
         })
         .catch(error => {
-          displayNotif(error.message, 'error')
+          displayNotif(error.response.data.error, 'error')
         })
       }
       setNewName('')
@@ -180,7 +179,7 @@ const App = () => {
             displayNotif(`Info on ${name} has already been deleted from the phonebook`, 'error')
           }
           else{
-            displayNotif(error.message, 'error')
+            displayNotif(error.response.data.error, 'error')
           }
         }
       )

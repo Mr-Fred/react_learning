@@ -12,6 +12,7 @@ const getAllContacts = async () => {
 const addNewContact = async (newContact) => {
   const request = axios.post(baseUrl, newContact)
   const response = await request;
+  
   return response.data;
 }
 
