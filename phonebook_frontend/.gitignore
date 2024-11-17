@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 .env
+..\part3\phonebook_backend\.env
+..\part3\notes_fullstack\.env
 
 # Editor directories and files
 .vscode/*

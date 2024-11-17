@@ -78,7 +78,8 @@ const update_contact = (request, response, next) => {
 }
 
 // eslint-disable-next-line no-undef
-module.exports = {get_phonebook,
+module.exports = {
+  get_phonebook,
   get_contact,
   post_contact,
   delete_contact,
