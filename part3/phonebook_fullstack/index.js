@@ -1,61 +1,60 @@
 // eslint-disable-next-line no-undef
-const express = require('express')
+const express = require('express');
 // eslint-disable-next-line no-undef
-const morgan = require('morgan')
+const morgan = require('morgan');
 
-const {get_phonebook, 
-  get_contact, 
-  post_contact, 
-  delete_contact,
-  // eslint-disable-next-line no-undef
-  update_contact,} = require('./api/phonebookApi')
+const cors = require('cors');
+const {
+  getPhonebook,
+  getContact,
+  postContact,
+  deleteContact,
+  updateContact,
+} = require('./api/phonebookApi');
 // eslint-disable-next-line no-undef
-const get_info = require('./info')
+const getInfo = require('./info');
 // eslint-disable-next-line no-undef
-const cors = require('cors')
 
-const app = express()
+const app = express();
 
-app.use(cors())
-app.use(express.json())
-app.use(express.static('dist'))
+app.use(cors());
+app.use(express.json());
+app.use(express.static('dist'));
 
 // eslint-disable-next-line no-unused-vars
-morgan.token('body', function(req, res) {
-  return JSON.stringify(req.body)
-} )
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+morgan.token('body', (req, res) => JSON.stringify(req.body));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-const errorHandler = (error, req, res, next) =>{
-  console.error(error.message)
+const errorHandler = (error, req, res, next) => {
+  console.error(error.message);
   if (error.name === 'CastError') {
-    return res.status(400).send({ error: 'malformatted id' })
-  } else if (error.name === 'ValidationError') {
-    return res.status(400).json({ error: error.message })
+    return res.status(400).send({ error: 'malformatted id' });
+  } if (error.name === 'ValidationError') {
+    return res.status(400).json({ error: error.message });
   }
-  next(error)
-}
+  next(error);
+};
 
-app.get('/api/phonebook', get_phonebook)
+app.get('/api/phonebook', getPhonebook);
 
-app.get('/api/phonebook/:id', get_contact)
+app.get('/api/phonebook/:id', getContact);
 
-app.get('/info', get_info)
+app.get('/info', getInfo);
 
 // POST REQUESTS
-app.post('/api/phonebook', post_contact)
+app.post('/api/phonebook', postContact);
 
 // UPDATE REQUESTS
-app.put('/api/phonebook/:id', update_contact)
+app.put('/api/phonebook/:id', updateContact);
 
 // DELETE REQUESTS
-app.delete('/api/phonebook/:id', delete_contact)
+app.delete('/api/phonebook/:id', deleteContact);
 
-app.use(errorHandler)
+app.use(errorHandler);
 
 // eslint-disable-next-line no-undef
-const PORT = process.env.PORT 
+const { PORT } = process.env;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+  console.log(`Server running on port ${PORT}`);
+});
