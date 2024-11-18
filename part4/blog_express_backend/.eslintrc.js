@@ -6,7 +6,8 @@ module.exports = {
   },
   rules: {
     'no-console': 'off',
+    'react-refresh/only-export-components': 'off',
+    'no-param-reassign': 'off',
     'no-underscore-dangle': 'off',
-    'no-param-reassign': 'off'
   },
 };

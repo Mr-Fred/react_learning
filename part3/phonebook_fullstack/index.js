@@ -25,6 +25,7 @@ app.use(express.static('dist'));
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
+// eslint-disable-next-line consistent-return
 const errorHandler = (error, req, res, next) => {
   console.error(error.message);
   if (error.name === 'CastError') {
