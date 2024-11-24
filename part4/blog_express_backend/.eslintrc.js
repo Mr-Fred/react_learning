@@ -9,5 +9,6 @@ module.exports = {
     'react-refresh/only-export-components': 'off',
     'no-param-reassign': 'off',
     'no-underscore-dangle': 'off',
+    'no-plusplus': 'off',
   },
 };

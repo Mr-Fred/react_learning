@@ -4,8 +4,8 @@
   "description": "Blog app backend powered by express",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint .",
+    "test": "node --test",
+    "lint": "npx eslint . --fix",
     "dev": "nodemon index.js"
   },
   "repository": {
