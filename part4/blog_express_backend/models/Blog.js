@@ -1,10 +1,25 @@
 const mongoose = require('mongoose');
 
 const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
+  title: {
+    type: String,
+    required: [true, 'Blog title is required'],
+  },
+  author: {
+    type: String,
+    required: [true, 'Author is required'],
+  },
   url: String,
-  likes: Number,
+  likes: {
+    type: Number,
+    default: 0,
+    validate: {
+      validator(v) {
+        return /^\d{0,9}$/.test(v);
+      },
+      message: (props) => `${props.value} is not valid`,
+    },
+  },
 });
 
 blogSchema.set('toJSON', {

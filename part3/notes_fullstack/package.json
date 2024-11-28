@@ -4,14 +4,14 @@
   "description": "Serve notes to frontend client",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
     "build:ui": "rm -rf dist && cd ../../part2/notes_frontend/ && npm run build && cp -r dist ../../part3/notes_fullstack",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
     "logs:prod": "fly logs",
-    "dev": "nodemon index.js",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "test": "node --test"
+    "test": "cross-env NODE_ENV=test node --test"
   },
   "repository": {
     "type": "git",
@@ -31,8 +31,11 @@
   "homepage": "https://github.com/Mr-Fred/react_learning/tree/fullstackopen_course#readme",
   "dependencies": {
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
+    "eslint-config-airbnb-base": "^15.0.0",
     "express": "^4.21.1",
+    "express-async-errors": "^3.1.1",
     "mongoose": "^8.8.1",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.7"
@@ -41,12 +44,13 @@
     "@eslint/js": "^9.15.0",
     "@flydotio/dockerfile": "^0.5.9",
     "@stylistic/eslint-plugin-js": "^2.10.1",
-    "eslint": "^8.2.0",
+    "eslint": "^9.15.0",
     "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.28.0",
-    "eslint-plugin-react-hooks": "^4.3.0",
-    "globals": "^15.12.0"
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "globals": "^15.12.0",
+    "supertest": "^7.0.0"
   }
 }
