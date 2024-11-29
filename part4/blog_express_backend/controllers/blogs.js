@@ -1,17 +1,17 @@
-const router = require('express').Router();
+const blogRouter = require('express').Router();
 const Blog = require('../models/Blog');
 
-router.get('/', async (req, res) => {
+blogRouter.get('/', async (req, res) => {
   const blogs = await Blog.find({});
   res.status(200).json(blogs);
 });
 
-router.get('/:id', async (req, res) => {
+blogRouter.get('/:id', async (req, res) => {
   const blog = await Blog.findById(req.params.id);
   res.status(200).json(blog);
 });
 
-router.post('/', async (req, res) => {
+blogRouter.post('/', async (req, res) => {
   const { body } = req;
   const newBlog = new Blog({
     title: body.title,
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
   res.status(201).json(savedBlog);
 });
 
-router.put('/:id', async (req, res) => {
+blogRouter.put('/:id', async (req, res) => {
   const { body } = req;
 
   const updatedBlog = {
@@ -42,7 +42,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // eslint-disable-next-line consistent-return
-router.delete('/:id', async (req, res) => {
+blogRouter.delete('/:id', async (req, res) => {
   const blogToDelete = await Blog.findById(req.params.id);
   if (!blogToDelete) {
     return res.status(204).json({ error: 'Requested blog not found' });
@@ -51,4 +51,4 @@ router.delete('/:id', async (req, res) => {
   res.status(204).send('Blog deleted successfully!');
 });
 
-module.exports = router;
+module.exports = blogRouter;

@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const config = require('./utils/config');
 const middleware = require('./utils/middleware');
 const logger = require('./utils/logger');
-const router = require('./controllers/blogs');
+const blogRouter = require('./controllers/blogs');
 
 logger.info('Initialising express app');
 const app = express();
@@ -34,8 +34,8 @@ app.use(express.json());
 morgan.token('body', (req, res) => JSON.stringify(req.body));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'));
 
-app.use('/', router);
-app.use('/api/blogs', router);
+app.use('/', blogRouter);
+app.use('/api/blogs', blogRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

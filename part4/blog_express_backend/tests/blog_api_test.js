@@ -12,12 +12,12 @@ const app = require('../app');
 
 const api = supertest(app);
 
-beforeEach(async () => {
-  await Blog.deleteMany({});
-  await Blog.insertMany(initialBlogs);
-});
-
 describe('api tests', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({});
+    await Blog.insertMany(initialBlogs);
+  });
+
   test('blogs are returned as json', async () => {
     await api
       .get('/api/blogs')
