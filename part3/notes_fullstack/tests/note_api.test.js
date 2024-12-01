@@ -123,8 +123,8 @@ describe('when there is initially some notes saved', () => {
       assert.strictEqual(notesAtEnd.length, testHelpers.initialNotes.length - 1)
     })
   })
+})
 
-  after(async () => {
-    await mongoose.connection.close()
-  })
+after(async () => {
+  await mongoose.connection.close()
 })

@@ -3,11 +3,12 @@ import js from "@eslint/js";
 import stylisticJs from '@stylistic/eslint-plugin-js';
 
 
+
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   js.configs.recommended,
   {
-    "extends": "airbnb",
+    extends: ["airbnb"],
     files: ["**/*.js"],
     languageOptions: {
       sourceType: "commonjs",
