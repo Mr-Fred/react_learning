@@ -10,5 +10,7 @@ module.exports = {
     'no-param-reassign': 'off',
     'no-underscore-dangle': 'off',
     'no-plusplus': 'off',
+    'consistent-return': 'off',
+    'no-else-return': ['error'],
   },
 };

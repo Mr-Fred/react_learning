@@ -1,15 +1,43 @@
+const jwt = require('jsonwebtoken');
 const logger = require('./logger');
+const Creator = require('../models/Creator');
 
 const errorHandler = (error, req, res, next) => {
   logger.error(error.message);
 
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' });
-  }
-  if (error.name === 'ValidationError') {
+  } if (error.name === 'ValidationError') {
     return res.status(400).json({ error: error.message });
+  } if (error.name === 'MongoServerError' && error.message.includes('E11000 duplicate key error')) {
+    return res.status(400).json({ error: 'expected `username` to be unique' });
+  } if (error.name === 'JsonWebTokenError') {
+    return res.status(401).json({ error: 'invalid token' });
+  } if (error.name === 'TokenExpiredError') {
+    return res.status(401).json({ error: 'token expired' });
   }
   next(error);
+};
+
+const tokenExtractor = (req, res, next) => {
+  const authorization = req.get('Authorization');
+  if (authorization && authorization.startsWith('Bearer ')) {
+    req.token = authorization.replace('Bearer ', '');
+  }
+  next();
+};
+
+const userExtractor = async (req, res, next) => {
+  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: 'Token missing or invalid. Please login/sign up to delete a blog posts' });
+  }
+  const creator = await Creator.findById(decodedToken.id);
+  if (!creator) {
+    return res.status(401).json({ error: 'Creator not found. Please login/sign up to delete a blog posts' });
+  }
+  req.creator = creator;
+  next();
 };
 
 const unknownEndpoint = (req, res) => {
@@ -19,4 +47,6 @@ const unknownEndpoint = (req, res) => {
 module.exports = {
   errorHandler,
   unknownEndpoint,
+  tokenExtractor,
+  userExtractor,
 };

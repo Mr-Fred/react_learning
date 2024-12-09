@@ -7,7 +7,11 @@ const blogSchema = new mongoose.Schema({
   },
   author: {
     type: String,
-    required: [true, 'Author is required'],
+    required: [true, 'author is required'],
+  },
+  creator: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Creator',
   },
   url: String,
   likes: {
