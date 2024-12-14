@@ -6,12 +6,16 @@ const Note = ({ note, toggleImportance }) => {
   : "make important";
   return (
     <>
-     <li className='p-2 font-bold rounded-md shadow-sm hover:bg-gray-100'>
-      {note.content} ||    
-      <button onClick={toggleImportance}>{label}</button>
+     <li className="p-4 m-3 bg-gray-100 rounded-md shadow-md flex justify-between items-center hover:bg-gray-200 transition">
+      <span className="text-gray-800 font-medium">{note.content}</span>
+      <button
+        onClick={toggleImportance}
+        className="text-blue-500 underline hover:text-blue-700"
+      >
+        {label}
+      </button>
     </li>
     </>
-   
   )
 }
 

@@ -90,6 +90,7 @@ blogRouter.put('/:id', async (req, res) => {
 // eslint-disable-next-line consistent-return
 blogRouter.delete('/:id', async (req, res) => {
   const { token, creator } = req;
+
   const decodedToken = jwt.verify(token, process.env.SECRET);
   if (!decodedToken.id) {
     return res.status(401).json({ error: 'Token missing or invalid. Please login/sign up to delete a blog posts' });

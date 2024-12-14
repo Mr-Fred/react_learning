@@ -11,11 +11,6 @@ node_modules
 dist
 dist-ssr
 *.local
-.env
-part3\phonebook_backend\.env
-part3\notes_fullstack\.env
-part4\blog_express_backend
-
 
 # Editor directories and files
 .vscode/*
@@ -27,4 +22,3 @@ part4\blog_express_backend
 *.njsproj
 *.sln
 *.sw?
-../task_mgt_dashboard.html

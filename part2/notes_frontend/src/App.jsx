@@ -1,25 +1,23 @@
-import Note from "./components/Note"
-import { useState, useEffect } from "react"
-
+import { useState, useEffect, useRef } from "react"
+// Services
 import noteService from './services/notes'
+import loginService from './services/login'
+
+// Ui components
 import Notification from "./components/Notification"
 import Footer from "./components/Footer"
+import { LoginForm, NoteForm} from "./components/Forms"
+import NotesList from "./components/NoteList"
+import Togglable from "./components/Toggleable"
 
 
 const App = () => {
   const [notes, setNotes] = useState([])
-  const [newNote, setNewNote] = useState('a new note...') 
   const [showAll, setShowAll] = useState(true)
   const [errorMessage, setErrorMessage] = useState(null)
-
-  // const hook = () => {
-  //   axios
-  //     .get('http://localhost:3001/notes')
-  //     .then(response => {
-  //       console.log('promise fulfilled')
-  //       setNotes(response.data)
-  //     })
-  // }
+  // eslint-disable-next-line no-unused-vars
+  const [user, setUser] = useState(null)
+  const noteFormRef = useRef()
 
   useEffect( 
     () => {
@@ -31,28 +29,32 @@ const App = () => {
     }
   , [])
 
+  useEffect(() => {
+    const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      noteService.setToken(user.token)
+    }
+  }, [])
+
   const notesToShow = showAll 
     ? notes 
     : notes.filter(note => note.important)
 
-  const handleNoteChange = (event) => 
-  {
-    console.log(event.target.value)
-    setNewNote(event.target.value)
-  }
-  const addNote = (event) => {
-      event.preventDefault()
-      const noteObject = {
-        content: newNote,
-        important: Math.random() < 0.5
-      }
+  const createNote = (noteObject) => {
+      noteFormRef.current.toggleVisibility()
       noteService
         .create(noteObject)
         .then(returnedNote => {
           setNotes(notes.concat(returnedNote))
-          setNewNote('')
+          setErrorMessage(`a new note successfully added`)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
         })
   }
+
   const toggleImportanceOf = (id) => {
     const note = notes.find(n => n.id === id)
     const changedNote = { ...note, important: !note.important }
@@ -72,12 +74,39 @@ const App = () => {
         }, 5000)
       })
   }
+  const loginApp = async (username, password) => {
+    try {
+      const user = await loginService.login({username, password})
+      window.localStorage.setItem('loggedNoteappUser', JSON.stringify(user))
+      noteService.setToken(user.token)
+      setUser(user)
+    } catch (exception) {
+      setErrorMessage('wrong credentials')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
   return (
     <div className="container flex flex-col items-center justify-center w-3/4 mx-auto my-10 p-6 rounded-lg shadow-md bg-gradient-to-r from-blue-400 to-purple-500 min-h-screen">
       <h1 className="text-3xl font-bold mb-4">Notes</h1>
 
       <Notification message={errorMessage} />
-
+      {user === null ?
+        <Togglable buttonLabel="login">
+          <LoginForm
+            loginApp={loginApp}
+          />
+        </Togglable>
+      : <>
+          <p>{user.username} logged-in</p>
+          <Togglable buttonLabel="new note" ref={noteFormRef}>
+            <NoteForm
+              createNote={createNote}
+            />
+          </Togglable>
+        </>
+      }
       <div className="note-list w-full text-center">
         <button
           className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 font-bold py-2 px-4 mb-3 rounded-full shadow-md transition duration-300"
@@ -87,28 +116,10 @@ const App = () => {
           show {showAll ? 'important' : 'all'}
         </button>
       </div>
-      <ul>
-          {notesToShow.map(note => 
-              <Note 
-              key={note.id} 
-              note={note} 
-              toggleImportance={
-                () => {
-                  toggleImportanceOf(note.id)
-                }
-              } />
-          )}
-      </ul>
-      <form className="note-form flex gap-4 mt-6" onSubmit={addNote}>
-          <input 
-              className="p-2 border border-gray-400 rounded"
-              type="text" 
-              value={newNote}
-              name="newNote"
-              onChange={handleNoteChange}
-          />
-          <button className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" type="submit">save</button>
-      </form>
+      <NotesList
+        notes={notesToShow}
+        toggleImportance={toggleImportanceOf} 
+      />
       <Footer />
     </div>
   )
