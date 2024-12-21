@@ -5,6 +5,7 @@ const BlogForm = ({ createBlog}) => {
   const [newTitle, setNewTitle] = useState('')
   const [newAuthor, setNewAuthor] = useState('')
   const [newUrl, setNewUrl] = useState('')
+  const [newLikes, setNewLikes] = useState(0)
 
   const addBlog = (event) => {
     event.preventDefault()
@@ -22,8 +23,10 @@ const BlogForm = ({ createBlog}) => {
     <div>
       <form onSubmit={addBlog}>
         <div>
-          <label htmlFor="Title">Title:</label>
+          <label htmlFor="title">Title:</label>
           <input
+            id="title"
+            required
             type="text"
             value={newTitle}
             name="Title"
@@ -31,8 +34,10 @@ const BlogForm = ({ createBlog}) => {
           />
         </div>
         <div>
-          <label htmlFor="Author">Author:</label>
+          <label htmlFor="author">Author:</label>
           <input
+            id="author"
+            required
             type="text"
             value={newAuthor}
             name="Author"
@@ -40,14 +45,26 @@ const BlogForm = ({ createBlog}) => {
           />
         </div>
         <div>
-          <label htmlFor="Url">Url:</label>
+          <label htmlFor="url">Url:</label>
           <input
+            id="url"
             type="text"
             value={newUrl}
             name="Url"
             onChange={({ target }) => setNewUrl(target.value)}
           />
         </div>
+        <div>
+          <label htmlFor="url">Likes:</label>
+          <input
+            id="likes"
+            type="number"
+            value={newLikes}
+            name="likes"
+            onChange={({ target }) => setNewLikes(target.value)}
+          />
+        </div>
+
         <button type="submit">create</button>
     </form>
     </div>

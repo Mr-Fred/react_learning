@@ -46,6 +46,11 @@ app.use('/api/blogs', midlwr.userExtractor, blogRouter);
 app.use('/api/creators', creatorsRouter);
 app.use('/api/login', loginRouter);
 
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing');
+  app.use('/api/testing', testingRouter);
+}
+
 app.use(midlwr.unknownEndpoint);
 app.use(midlwr.errorHandler);
 

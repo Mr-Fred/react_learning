@@ -24,3 +24,7 @@ dist-ssr
 *.sln
 *.sw?
 ../task_mgt_dashboard.html
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -12,5 +12,6 @@ module.exports = {
     'no-plusplus': 'off',
     'consistent-return': 'off',
     'no-else-return': ['error'],
+    'global-require': 'off',
   },
 };

@@ -27,3 +27,7 @@ part3\notes_fullstack\.env
 *.sw?
 ./task_mgt_dashboard.html
 *.idx
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -33,7 +33,7 @@ const App = () => {
 
   useEffect( () => {
     user !== null && blogService.getAll().then(blogs =>
-      blogs.sort((a, b) => b.likes - a.likes)
+      blogs ? blogs.sort((a, b) => b.likes - a.likes) : []
     ).then(blogs =>
       setBlogs( blogs )
     )

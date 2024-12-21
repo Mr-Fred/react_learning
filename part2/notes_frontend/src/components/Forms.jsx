@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 
 
-const LoginForm = ({loginApp}) => {
+const LoginForm = ({ loginApp }) => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -13,44 +13,46 @@ const LoginForm = ({loginApp}) => {
 
   return(
     <div className="max-w-md mx-auto bg-white p-6 mb-5 rounded-lg shadow-md">
-        <form className="flex flex-col gap-4" onSubmit={handleLogin}>
-          <div>
-            <label className="block text-gray-700 mb-2 font-semibold">username</label>
-            <input
-              type="text"
-              value={username}
-              name="Username"
-              onChange={({target}) => setUsername(target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter username"
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 mb-2 font-semibold">password</label>
-            <input
-              type="password"
-              value={password}
-              name="Password"
-              onChange={({target}) => setPassword(target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-              placeholder="Enter password"
-            />
-          </div>
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition">
+      <form className="flex flex-col gap-4" onSubmit={handleLogin}>
+        <div>
+          <label className="block text-gray-700 mb-2 font-semibold">username</label>
+          <input
+            data-testid="username"
+            type="text"
+            value={username}
+            name="username"
+            onChange={({ target }) => setUsername(target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter username"
+          />
+        </div>
+        <div>
+          <label className="block text-gray-700 mb-2 font-semibold">password</label>
+          <input
+            data-testid="password"
+            type="password"
+            value={password}
+            name="password"
+            onChange={({ target }) => setPassword(target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter password"
+          />
+        </div>
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition">
             Login
-          </button>
-        </form>
+        </button>
+      </form>
     </div>
   )
 }
 
 const NoteForm = ({ createNote }) => {
   const [newNote, setNewNote] = useState('')
-  
+
   const addNote = (event) => {
-    event.preventDefault();
+    event.preventDefault()
     createNote({
       content: newNote,
       important: Math.random() < 0.5,
@@ -81,9 +83,9 @@ const NoteForm = ({ createNote }) => {
           Save
         </button>
       </form>
-  </div>
+    </div>
   )
-};
+}
 
 LoginForm.propTypes = {
   loginApp: PropTypes.func.isRequired,
@@ -93,4 +95,4 @@ NoteForm.propTypes = {
   createNote: PropTypes.func.isRequired,
 }
 
-export {LoginForm, NoteForm}
+export { LoginForm, NoteForm }

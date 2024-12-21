@@ -20,19 +20,20 @@ const Blog = ({ blog, updateBlog, deleteBlog }) => {
   }
 
   return (
-    <div style={blogStyle}>
-      {blog.title} by {blog.author}  
+    <div style={blogStyle} className='blog'>
+      <h3>{blog.title} by {blog.author} </h3>
       <button onClick={handleBlogView}>
         {buttonLabel}
       </button>
       <br />
-      <div style={fullBlog ? {} : { display: 'none' }}>
-        Url: {blog.url}<br />
-        Likes: {blog.likes}  <button onClick={incrementLikes}>like</button> <br />
-        Creator: {blog.creator.name}
+      <div style={fullBlog ? {} : { display: 'none' }} className='blog-details'>
+        <span className='blog-url'>Url: {blog.url}</span> <br />
+        <span className='blog-likes'>Likes: {blog.likes}</span>
+        <button onClick={incrementLikes}>like</button> <br />
+        <span className='blog-creator'>Added by: {blog.creator.name}</span>
       </div>
       <br/>
-      <button onClick={() => deleteBlog(blog)}>remove</button>
+      <button className='blog-remove' onClick={() => deleteBlog(blog)}>remove</button>
     </div>  
   )
 }

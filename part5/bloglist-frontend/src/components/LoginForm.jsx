@@ -3,9 +3,7 @@ import { useState } from "react"
 const LoginForm = ({ username, password, handleLogin, setUsername, setPassword }) => {
 
   return(
-
     <div>
-
       <form onSubmit={handleLogin}>
         <label htmlFor="username" >Username</label>
         <input

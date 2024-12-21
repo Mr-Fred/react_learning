@@ -1,5 +1,5 @@
-import propTypes from 'prop-types';
-import Note from './Note';
+import propTypes from 'prop-types'
+import Note from './Note'
 
 
 const NotesList = ({ notes, toggleImportance }) => (
@@ -15,11 +15,11 @@ const NotesList = ({ notes, toggleImportance }) => (
       ))}
     </ul>
   </div>
-);
+)
 
 NotesList.propTypes = {
   notes: propTypes.arrayOf(propTypes.object).isRequired,
   toggleImportance: propTypes.func.isRequired,
-};
+}
 
-export default NotesList;
+export default NotesList
