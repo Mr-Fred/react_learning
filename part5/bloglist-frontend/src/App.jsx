@@ -31,13 +31,17 @@ const App = () => {
     }
   }, [])
 
-  useEffect( () => {
-    user !== null && blogService.getAll().then(blogs =>
-      blogs ? blogs.sort((a, b) => b.likes - a.likes) : []
-    ).then(blogs =>
-      setBlogs( blogs )
-    )
-  }, [user])
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      if (user) {
+        const blogs = await blogService.getAll();
+        const sortedBlogs = blogs ? blogs.sort((a, b) => b.likes - a.likes) : [];
+        setBlogs(sortedBlogs);
+      }
+    };
+    fetchBlogs();
+  }, [user]);
+  
 
   const handleNotification = (message, type) => {
     setNotification({message, type})
