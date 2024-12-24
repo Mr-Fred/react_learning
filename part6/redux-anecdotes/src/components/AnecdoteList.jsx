@@ -1,8 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { PropTypes } from 'prop-types'
-import { castVote } from '../reducers/anecdoteReducer'
-import { setNotification, clearNotification } from "../reducers/notificationReducer";
-
+import { voteForAnecdote } from '../reducers/anecdoteReducer'
+import { notify } from "../reducers/notificationReducer";
 
 const Anecdote = ({ anecdote, handleClick }) => {
   
@@ -35,22 +34,11 @@ const AnecdotesList = () => {
 
   const dispatch = useDispatch()
   const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
+  
   const handleClick = (anecdote) => {
-    vote(anecdote.id)
-    notify(`You voted for '${anecdote.content}'`, 'success')
+    dispatch(voteForAnecdote(anecdote.id))
+    dispatch(notify(`You voted for '${anecdote.content}'`, 'success', 5))
   }
-
-  const vote = (id) => {
-    dispatch(castVote(id))
-  }
-
-  const notify = (message, type) => {
-    dispatch(setNotification({message, type}))
-    setTimeout(() => {
-      dispatch(clearNotification())
-    }, 5000)
-  }
-
   return (
     <div>
       {sortedAnecdotes.map(anecdote =>
@@ -60,7 +48,6 @@ const AnecdotesList = () => {
           handleClick={() => handleClick(anecdote)}
         />
       )}
-
     </div>
   )
 }

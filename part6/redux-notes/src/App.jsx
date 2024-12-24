@@ -1,19 +1,22 @@
-import BlogForm from './components/NoteForm'
+import { useEffect } from 'react'
+import NoteForm from './components/NoteForm'
 import Notes from './components/Notes'
-import { useSelector } from 'react-redux'
 import VisibilityFilter from './components/visibilityFilter'
+
+import {useDispatch} from 'react-redux'
+import { initializeNotes } from './reducers/noteReducer'
 
 
 const App = () => {
-  const notes = useSelector(state => state)
 
-  const filterSelected = (value) => {
-    console.log(value)
-  }
-
+  const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(initializeNotes())
+  }, [])
+  
   return(
     <div>
-      <BlogForm />
+      <NoteForm />
       <VisibilityFilter />
       <Notes />
     </div>

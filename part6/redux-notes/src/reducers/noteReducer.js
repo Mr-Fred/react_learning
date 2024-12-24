@@ -1,44 +1,51 @@
 import { createSlice, current } from "@reduxjs/toolkit"
-
-const initialState =  [
-  {
-    content: 'reducer defines how redux store works',
-    important: true,
-    id: 1,
-  },
-  {
-    content: 'state of store can contain any data',
-    important: false,
-    id: 2,
-  },
-]
-
-const generateId = () => Number((Math.random() * 1000000).toFixed(0))
+import noteService from '../services/notes'
 
 const noteSlice = createSlice({
   name: 'notes',
-  initialState,
+  initialState: [],
   reducers: {
-    createNote: (state, action) => {
-      state.push({
-        content: action.payload.content,
-        important: action.payload.important || false,
-        id: generateId(),
-      })
-    },
-    toggleImportance: (state, action) => {
+    addUpdatedNote: (state, action) => {
       const id = action.payload.id
-      const noteToChange = state.find(n => n.id === id)
-      const changedNote = {
-        ...noteToChange,
-        important: !noteToChange.important
-      }
-      console.log(current(state))
+      const changedNote = action.payload
       return state.map(note =>
         note.id !== id ? note : changedNote
       )
+    },
+    appendNote: (state, action) => {
+      state.push(action.payload)
+    },
+    setNotes: (state, action) => {
+      return action.payload
     }
   },
 })
-export const { createNote, toggleImportanceOf } = noteSlice.actions
+export const { setNotes, appendNote, addUpdatedNote } = noteSlice.actions
+
+export const initializeNotes = () => {
+  return async dispatch => {
+    const notes = await noteService.getAll()
+    dispatch(setNotes(notes))
+  }
+}
+
+export const createNote = content => {
+  return async dispatch => {
+    const newNote = await noteService.createNewNote(content)
+    dispatch(appendNote(newNote))
+  }
+}
+export const toggleImportance = (id) => {
+  return async (dispatch, getState) => {
+    const notes = getState().notes
+    const noteToChange = notes.find(n => n.id === id)
+    const changedNote = { ...noteToChange, important: !noteToChange.important }
+    try {
+      const changedNoteInServer = await noteService.update(id, changedNote)
+      dispatch(addUpdatedNote(changedNoteInServer))
+    } catch (error) {
+      console.error('Failed to update note:', error)
+    }
+  }
+}
 export default noteSlice.reducer
