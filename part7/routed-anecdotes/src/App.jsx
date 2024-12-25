@@ -3,9 +3,10 @@ import {
   Routes,
   Route,
   Link,
-  Navigate,
-  useMatch
+  useMatch,
+  useNavigate
 } from 'react-router-dom'
+import { PropTypes } from 'prop-types'
 
 const Menu = () => {
   const padding = {
@@ -13,21 +14,48 @@ const Menu = () => {
   }
   return (
     <div>
-      <a href='#' style={padding}>anecdotes</a>
-      <a href='#' style={padding}>create new</a>
-      <a href='#' style={padding}>about</a>
+      <Link to='/' style={padding}>anecdotes</Link>
+      <Link to='/create' style={padding}>create new</Link>
+      <Link to='/about' style={padding}>about</Link>
     </div>
   )
 }
 
-const AnecdoteList = ({ anecdotes }) => (
-  <div>
+const Anecdote = ({ anecdote }) => {
+  return (
+    <div>
+      <h2>{anecdote?.content} by {anecdote?.author}</h2>
+      <p>has {anecdote?.votes} votes</p>
+      <p>for more info see <a href={anecdote?.info}>{anecdote?.info}</a></p>
+    </div>
+  )
+}
+
+Anecdote.propTypes = {
+  anecdote: PropTypes.shape({
+    content: PropTypes.string.isRequired, author: PropTypes.string.isRequired, info: PropTypes.string.isRequired, votes: PropTypes.number.isRequired
+  })
+}
+
+const AnecdoteList = ({ anecdotes }) => {
+  return (
+    <div>
     <h2>Anecdotes</h2>
     <ul>
-      {anecdotes.map(anecdote => <li key={anecdote.id} >{anecdote.content}</li>)}
+      {anecdotes.map(anecdote => 
+      <li key={anecdote.id} >
+        <Link to={`anecdotes/${anecdote.id}`}>{anecdote.content}</Link>
+      </li>
+      )}
     </ul>
   </div>
-)
+  )
+}
+
+AnecdoteList.propTypes = {
+  anecdotes: PropTypes.arrayOf(PropTypes.object).isRequired
+}
+
 
 const About = () => (
   <div>
@@ -37,7 +65,7 @@ const About = () => (
     <em>An anecdote is a brief, revealing account of an individual person or an incident.
       Occasionally humorous, anecdotes differ from jokes because their primary purpose is not simply to provoke laughter but to reveal a truth more general than the brief tale itself,
       such as to characterize a person by delineating a specific quirk or trait, to communicate an abstract idea about a person, place, or thing through the concrete details of a short narrative.
-      An anecdote is "a story with a point."</em>
+      An anecdote is &quot;a story with a point.&quot;</em>
 
     <p>Software engineering is full of excellent anecdotes, at this app you can find the best and add more.</p>
   </div>
@@ -56,6 +84,7 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
 
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -65,6 +94,14 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    navigate('/')
+    notify(`a new anecdote ${content} created!`)
+  }
+  const notify = (message) => {
+    props.setNotification(message)
+    setTimeout(() => {
+      props.setNotification('')
+    }, 5000)
   }
 
   return (
@@ -88,6 +125,10 @@ const CreateNew = (props) => {
     </div>
   )
 
+}
+CreateNew.propTypes = {
+  addNew: PropTypes.func.isRequired,
+  setNotification: PropTypes.func.isRequired
 }
 
 const App = () => {
@@ -115,27 +156,36 @@ const App = () => {
     setAnecdotes(anecdotes.concat(anecdote))
   }
 
-  const anecdoteById = (id) =>
-    anecdotes.find(a => a.id === id)
+  // const anecdoteById = (id) =>
+  //   anecdotes.find(a => a.id === id)
 
-  const vote = (id) => {
-    const anecdote = anecdoteById(id)
+  // const vote = (id) => {
+  //   const anecdote = anecdoteById(id)
 
-    const voted = {
-      ...anecdote,
-      votes: anecdote.votes + 1
-    }
+  //   const voted = {
+  //     ...anecdote,
+  //     votes: anecdote.votes + 1
+  //   }
 
-    setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
-  }
+  //   setAnecdotes(anecdotes.map(a => a.id === id ? voted : a))
+  // }
+
+  const match = useMatch('/anecdotes/:id')
+  const anecdote = match
+    ? anecdotes.find(anecdote => Number(anecdote.id) === Number(match.params.id))
+    : null
 
   return (
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+      <p>{notification}</p>
+      <Routes>
+        <Route path='/anecdotes/:id' element={<Anecdote anecdote={anecdote} />} />
+        <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
+        <Route path='/create' element={<CreateNew addNew={addNew} setNotification={setNotification} />} />
+        <Route path='/about' element={<About />} /> 
+      </Routes>
       <Footer />
     </div>
   )
