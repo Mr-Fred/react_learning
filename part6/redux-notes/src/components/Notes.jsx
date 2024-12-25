@@ -1,9 +1,25 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { toggleImportance } from '../reducers/noteReducer'
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import { getNotes, updateNote } from '../services/requests'
+import { useSelector } from 'react-redux'
 
-const Note = ({ note, handleClick }) => {
+import Filter from './FilterButtons'
+
+
+const Note = ({ note }) => {
+  const queryClient = useQueryClient()
+
+  const updateNoteMutation = useMutation({
+    mutationFn: updateNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries(['notes'])
+    }
+  })
+    
+  const toggleImportance = (note) => {
+    updateNoteMutation.mutate({ ...note, important: !note.important })
+  }
   return(
-    <li onClick={handleClick}>
+    <li onClick={() => toggleImportance(note)}>
       {note.content} 
       <strong> {note.important ? 'important' : ''}</strong>
     </li>
@@ -12,28 +28,43 @@ const Note = ({ note, handleClick }) => {
 
 const Notes = () => {
 
-  const dispatch = useDispatch()
-  const notes = useSelector(({notes, filter}) => {
+  const filter = useSelector(({ filter}) => {return filter})
+
+  const result = useQuery({
+    queryKey: ['notes'],
+    queryFn: getNotes,
+    refetchOnWindowFocus: false
+  })
+  if ( result.isLoading ) {
+    return <div>loading data...</div>
+  }
+  if ( result.isError ) {
+    return <div>error loading data</div>
+  }
+  const notes = result.data
+
+  const filterNotes = () => {
     if (filter === 'ALL') {
       return notes
     }
     return filter === 'IMPORTANT'
       ? notes.filter(note => note.important)
-      : notes.filter(note => !note.important)
-  })
+      : notes.filter(note => !note.important) 
+  }
+  const filteredNotes = filterNotes()
 
   return(
-    <ul>
-      {notes.map(note =>
-        <Note
-          key={note.id}
-          note={note}
-          handleClick={() => 
-            dispatch(toggleImportance(note.id))
-          }
-        />
-      )}
-    </ul>
+    <div>
+      <Filter />
+      <ul>
+        {filteredNotes.map(note =>
+          <Note
+            key={note.id}
+            note={note}
+          />
+        )}
+      </ul>
+    </div>
   )
 }
 

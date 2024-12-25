@@ -1,10 +1,10 @@
 import { useEffect } from 'react'
-import NoteForm from './components/NoteForm'
-import Notes from './components/Notes'
-import VisibilityFilter from './components/visibilityFilter'
+import NoteForm from './NoteForm'
+import Notes from './Notes'
+import VisibilityFilter from './visibilityFilter'
 
 import {useDispatch} from 'react-redux'
-import { initializeNotes } from './reducers/noteReducer'
+import { initializeNotes } from '../reducers/noteReducer'
 
 
 const App = () => {
