@@ -5,7 +5,6 @@ function getAllCountries(){
 
     const request = axios.get(url)
     return request.then(response => {
-            // console.log(response.data)
             return response.data
         })
         .catch(error => {

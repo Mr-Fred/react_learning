@@ -3,9 +3,10 @@ import {
   Routes,
   Route,
   Link,
-  useMatch,
-  useNavigate
+  useMatch
 } from 'react-router-dom'
+import CreateNew from './components/Form'
+import { useNotication } from './hooks'
 import { PropTypes } from 'prop-types'
 
 const Menu = () => {
@@ -79,57 +80,7 @@ const Footer = () => (
   </div>
 )
 
-const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
 
-  const navigate = useNavigate()
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    props.addNew({
-      content,
-      author,
-      info,
-      votes: 0
-    })
-    navigate('/')
-    notify(`a new anecdote ${content} created!`)
-  }
-  const notify = (message) => {
-    props.setNotification(message)
-    setTimeout(() => {
-      props.setNotification('')
-    }, 5000)
-  }
-
-  return (
-    <div>
-      <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
-        </div>
-        <div>
-          author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
-        </div>
-        <div>
-          url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
-        </div>
-        <button>create</button>
-      </form>
-    </div>
-  )
-
-}
-CreateNew.propTypes = {
-  addNew: PropTypes.func.isRequired,
-  setNotification: PropTypes.func.isRequired
-}
 
 const App = () => {
   const [anecdotes, setAnecdotes] = useState([
@@ -149,7 +100,7 @@ const App = () => {
     }
   ])
 
-  const [notification, setNotification] = useState('')
+  const notification = useNotication()
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
@@ -179,11 +130,11 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
-      <p>{notification}</p>
+      <p>{notification.message}</p>
       <Routes>
         <Route path='/anecdotes/:id' element={<Anecdote anecdote={anecdote} />} />
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
-        <Route path='/create' element={<CreateNew addNew={addNew} setNotification={setNotification} />} />
+        <Route path='/create' element={<CreateNew addNew={addNew} />} />
         <Route path='/about' element={<About />} /> 
       </Routes>
       <Footer />
