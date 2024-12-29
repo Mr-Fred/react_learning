@@ -1,25 +1,26 @@
-import { useQueryClient, useMutation } from '@tanstack/react-query'
-import { updateNote } from '../services/requests'
-
+import { useUpdateNote } from "../services/noteService"
+import { showNotification } from "../reducers/notifReducer"
+import { addUpdatedNote } from "../reducers/noteReducer"
+import { useDispatch } from 'react-redux'
 const Note = ({ note }) => {
+  const dispatch = useDispatch()
+  const { mutate: updateNote, isLoading, error } = useUpdateNote()
 
-  const queryClient = useQueryClient()
 
-  const updateNoteMutation = useMutation({
-    mutationFn: updateNote,
-    onSuccess: () => {
-      queryClient.invalidateQueries(['notes'])
-    }
-  })
-    
-  const toggleImportance = (n) => {
-    updateNoteMutation.mutate({ ...n, important: !n.important })
+  const toggleImportance = async (n) => {
+    const changedNote = { ...n, important: !n.important }
+    updateNote(changedNote)
+    dispatch(showNotification(`Note ${n.content} has been updated`, 'success', 5))
   }
   return(
     <div>
       <h2>{note.content}</h2>
       <div>{note.user}</div>
-      <div onClick={() => toggleImportance(note)}><strong>{note.important ? 'important' : ''}</strong></div>
+      <button onClick={() => toggleImportance(note)}>
+        <strong>
+          {note.important ? 'Make Not important' : 'Make Important'}
+        </strong>
+      </button>
     </div>
   )
 }

@@ -1,12 +1,13 @@
-import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap'
+import { useSelector } from 'react-redux'
 
 import Filter from './FilterButtons'
 
 const Notes = ({notes}) => {
 
   const filter = useSelector(({ filter}) => {return filter})
-
+  
   const filterNotes = () => {
     if (filter === 'ALL') {
       return notes
@@ -19,14 +20,24 @@ const Notes = ({notes}) => {
 
   return(
     <div>
+      <h2>Notes</h2>
       <Filter />
-      <ul>
-        {filteredNotes.map(note =>
-          <li>
-            <Link to={`/notes/${note.id}`}>{note.content}</Link>
-          </li>
-        )}
-      </ul>
+      <Table striped>
+        <tbody>
+          {filteredNotes.map(note =>
+            <tr key={note.id}>
+              <td>
+                <Link to={`/notes/${note.id}`}>
+                  {note.content}
+                </Link>
+              </td>
+              <td>
+                {note.user}
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     </div>
   )
 }
