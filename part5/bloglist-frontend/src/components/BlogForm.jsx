@@ -1,78 +1,93 @@
-import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import { useField } from "../reducers/inputField";
+import { useCreateBlog } from "../features/useBlogs";
+import { useSelector } from "react-redux";
 
-const BlogForm = ({ createBlog}) => {
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newUrl, setNewUrl] = useState('')
-  const [newLikes, setNewLikes] = useState(0)
+const BlogForm = () => {
+  const newTitle = useField("text", "title");
+  const newAuthor = useField("text", "author");
+  const newUrl = useField("text", "url");
+  const newLikes = useField("number", "likes");
+  const token = useSelector((state) => state.user.token);
+
+  const { mutate: createBlog } = useCreateBlog();
 
   const addBlog = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     createBlog({
-      title: newTitle,
-      author: newAuthor,
-      url: newUrl,
-    })
-    setNewTitle('')
-    setNewAuthor('')
-    setNewUrl('')
-  }
+      nB: {
+        title: newTitle.value,
+        author: newAuthor.value,
+        url: newUrl.value,
+        likes: newLikes.value,
+      },
+      token: token,
+    });
+    newTitle.reset();
+    newAuthor.reset();
+    newUrl.reset();
+    newLikes.reset();
+  };
 
   return (
-    <div>
-      <form onSubmit={addBlog}>
+    <div className="bg-white p-6 rounded shadow-md">
+      <h2 className="text-2xl font-bold mb-4">Create New Blog</h2>
+      <form onSubmit={addBlog} className="space-y-4">
         <div>
-          <label htmlFor="title">Title:</label>
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700">
+            Title:
+          </label>
           <input
             id="title"
-            required
             type="text"
-            value={newTitle}
-            name="Title"
-            onChange={({ target }) => setNewTitle(target.value)}
+            required
+            className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
+            {...newTitle.inputProps}
           />
         </div>
         <div>
-          <label htmlFor="author">Author:</label>
+          <label htmlFor="author" className="block text-sm font-medium text-gray-700">
+            Author:
+          </label>
           <input
             id="author"
-            required
             type="text"
-            value={newAuthor}
-            name="Author"
-            onChange={({ target }) => setNewAuthor(target.value)}
+            required
+            className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
+            {...newAuthor.inputProps}
           />
         </div>
         <div>
-          <label htmlFor="url">Url:</label>
+          <label htmlFor="url" className="block text-sm font-medium text-gray-700">
+            Url:
+          </label>
           <input
             id="url"
             type="text"
-            value={newUrl}
-            name="Url"
-            onChange={({ target }) => setNewUrl(target.value)}
+            className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
+            {...newUrl.inputProps}
           />
         </div>
         <div>
-          <label htmlFor="url">Likes:</label>
+          <label htmlFor="likes" className="block text-sm font-medium text-gray-700">
+            Likes:
+          </label>
           <input
             id="likes"
             type="number"
-            value={newLikes}
-            name="likes"
-            onChange={({ target }) => setNewLikes(target.value)}
+            className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
+            {...newLikes.inputProps}
           />
         </div>
-
-        <button type="submit">create</button>
-    </form>
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Create
+        </button>
+      </form>
     </div>
-  )
-}
+  );
+};
 
-BlogForm.propTypes = {
-  createBlog: PropTypes.func.isRequired,
-}
-
-export default BlogForm
+export default BlogForm;

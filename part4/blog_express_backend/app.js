@@ -14,6 +14,7 @@ const logger = require('./utils/logger');
 const blogRouter = require('./controllers/blogs');
 const creatorsRouter = require('./controllers/creators');
 const loginRouter = require('./controllers/login');
+const commentRouter = require('./controllers/comment');
 
 logger.info('Initialising express app');
 const app = express();
@@ -45,6 +46,7 @@ app.use('/', blogRouter);
 app.use('/api/blogs', midlwr.userExtractor, blogRouter);
 app.use('/api/creators', creatorsRouter);
 app.use('/api/login', loginRouter);
+app.use('/api/blogs/:id/comments', commentRouter);
 
 if (process.env.NODE_ENV === 'test') {
   const testingRouter = require('./controllers/testing');

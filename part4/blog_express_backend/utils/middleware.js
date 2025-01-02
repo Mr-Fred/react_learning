@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const logger = require('./logger');
 const Creator = require('../models/Creator');
+const Blog = require('../models/Blog');
 
 const errorHandler = (error, req, res, next) => {
   logger.error(error.message);
@@ -40,6 +41,21 @@ const userExtractor = async (req, res, next) => {
   next();
 };
 
+// Validate token helper function
+const validateToken = (token, res) => {
+  if (!token && jwt.verify(token, process.env.SECRET)) {
+    return res.status(401).json({ error: 'Token missing or invalid. Please login/sign up to add a comment' });
+  }
+};
+
+// Validate blog helper function
+const validateBlog = async (blogId, res) => {
+  const blog = await Blog.findById(blogId);
+  if (!blog) {
+    return res.status(404).json({ error: 'Blog not found' });
+  }
+};
+
 const unknownEndpoint = (req, res) => {
   res.status(404).send({ error: 'unknown endpoint' });
 };
@@ -49,4 +65,6 @@ module.exports = {
   unknownEndpoint,
   tokenExtractor,
   userExtractor,
+  validateToken,
+  validateBlog,
 };

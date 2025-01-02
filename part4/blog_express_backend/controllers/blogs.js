@@ -106,7 +106,7 @@ blogRouter.delete('/:id', async (req, res) => {
     await Blog.findByIdAndDelete(req.params.id);
     creator.blogs = creator.blogs.filter((blog) => blog.toString() !== req.params.id);
     await creator.save();
-    res.status(204).send('Blog deleted successfully!');
+    res.status(200).json(blogToDelete);
   } else {
     res.status(403).json({ error: 'You are not authorized to delete this blog' });
   }
