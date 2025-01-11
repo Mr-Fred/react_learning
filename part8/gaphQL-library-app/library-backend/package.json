@@ -1,0 +1,24 @@
+{
+  "name": "gaphql-library-backend-app",
+  "version": "1.0.0",
+  "description": "a GraphQL backend for a small library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mr-Fred/react_learning.git#fullstackopen_course"
+  },
+  "author": "Fred Adeniyi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Mr-Fred/react_learning/issues"
+  },
+  "homepage": "https://github.com/Mr-Fred/react_learning/tree/fullstackopen_course#readme",
+  "dependencies": {
+    "@apollo/client": "^3.12.4",
+    "@apollo/server": "^4.11.2",
+    "graphql": "^16.10.0"
+  }
+}
