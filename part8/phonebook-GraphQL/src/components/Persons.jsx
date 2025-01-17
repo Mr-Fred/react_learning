@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { gql, useQuery } from '@apollo/client'
+import { useQuery } from '@apollo/client'
+import PropTypes from 'prop-types'
 
 // Queries
 import { FIND_PERSON } from '../services/queries'
@@ -17,12 +18,18 @@ const Person = ({ person, onClose }) => {
   )
 }
 
+Person.propTypes = {
+  person: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+}
+
 const Persons = ({ persons }) => {
   const [nameToSearch, setNameToSearch] = useState(null)
   const result = useQuery(FIND_PERSON, {
     variables: { nameToSearch },
     skip: !nameToSearch,
   })
+
   if (nameToSearch && result.data) {
     return (
       <Person
@@ -31,6 +38,7 @@ const Persons = ({ persons }) => {
       />
     )
   }
+  
   return (
     <div>
       <h2>Contacts</h2>
@@ -44,6 +52,10 @@ const Persons = ({ persons }) => {
       )}
     </div>
   )
+}
+
+Persons.propTypes = {
+  persons: PropTypes.array.isRequired,
 }
 
 export default Persons

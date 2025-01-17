@@ -1,12 +1,15 @@
 /* eslint-disable no-undef */
+import dotenv from 'dotenv'
+dotenv.config()
+import jwt from 'jsonwebtoken'
+import User from './models/User.js'
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
 import mongoose from 'mongoose'
-import { resolvers } from './graphQl/resolvers'
-import { typeDefs } from './graphQl/typeDefs'
+import { resolvers } from './graphQl/resolvers.js'
+import { typeDefs } from './graphQl/typeDefs.js'
 
 mongoose.set('strictQuery', false)
-require('dotenv').config()
 
 const MONGODB_URI = process.env.MONGODB_URI
 const JWT_SECRET = process.env.SECRET

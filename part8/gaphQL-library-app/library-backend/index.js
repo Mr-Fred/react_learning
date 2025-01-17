@@ -1,16 +1,16 @@
 /* eslint-disable no-undef */
 import { ApolloServer } from '@apollo/server'
 import { startStandaloneServer } from '@apollo/server/standalone'
-import dotenv from 'dotenv'
-dotenv.config()
-import { typeDefs } from './typeDefs'
-import { resolvers } from './resolvers'
+import context from './context/context.js';
+import * as dotenv from 'dotenv'
+import { typeDefs } from './schemas/typeDefs.js'
+import { resolvers } from './resolvers/resolvers.js'
 import mongoose from 'mongoose'
 
+dotenv.config()
 const MONGODB_URI = process.env.MONGODB_URI
-const JWT_SECRET = process.env.SECRET
 
-mongoose.connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('connected to MongoDB')
   })
@@ -25,14 +25,7 @@ const server = new ApolloServer({
 
 startStandaloneServer(server, {
   listen: { port: 4000 },
-  context: async ({req}) => {
-    const auth = req? req.headers.authorization : null
-    if (auth && auth.toLowerCase().startsWith('bearer ')) {
-      const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
-      const currentUser = await User.findById(decodedToken.id)
-      return { currentUser }
-    }
-  }
-}).then(({ url }) => {
+  context: context
+  }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })

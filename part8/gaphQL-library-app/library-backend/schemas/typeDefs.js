@@ -1,13 +1,13 @@
 
 export const typeDefs = `
-  type Authors {
+  type Author {
     name: String!
     id: ID!
     born: Int
     bookCount: Int!
   }
 
-  type Books {
+  type Book {
     title: String!
     published: Int!
     author: Author!
@@ -22,15 +22,17 @@ export const typeDefs = `
     id: ID!
   }
 
-  type Token {
-    value: String!
+  type UserWithToken {
+    username: String!
+    favoriteGenre: String!
+    token: String!
   }
 
   type Query {
     authorCount: Int!
     bookCount: Int!
-    allBooks(name: String, genre: String): [Books!]!
-    allAuthors: [Authors!]!
+    allBooks(name: String, genre: String): [Book!]!
+    allAuthors: [Author!]!
     me: User
   }
   
@@ -38,24 +40,30 @@ export const typeDefs = `
     addBook(
       title: String!
       author: String!
+      born: Int
       published: Int!
       genres: [String!]!
-    ): Books!
+    ): Book!
 
     editAuthor(
       name: String!
       setBornTo: Int!
-    ): Authors
+    ): Author
+
+    createUser(
+      username: String!
+      favoriteGenre: String!
+      password: String!
+    ): User
+
+    updateUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
+
+    login(
+      username: String!
+      password: String!
+    ): UserWithToken
   }
-
-  createUser(
-    username: String!
-    favoriteGenre: String!
-    password: String!
-  ): User
-
-  login(
-    username: String!
-    password: String!
-  ): Token
 `

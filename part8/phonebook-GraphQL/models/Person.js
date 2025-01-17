@@ -22,4 +22,4 @@ const schema = new mongoose.Schema({
   },
 })
 
-export const Person = mongoose.model('Person', schema)
+export default mongoose.model('Person', schema)

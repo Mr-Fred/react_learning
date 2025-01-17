@@ -1,14 +1,13 @@
 import process from 'node:process'
 import dotenv from 'dotenv'
 dotenv.config()
-import Person from './models/Person'
+import Person from '../models/Person.js'
 import { GraphQLError } from 'graphql'
 import jwt from 'jsonwebtoken'
-import User from './models/User'
+import User from '../models/User.js'
 
 
 const JWT_SECRET = process.env.SECRET
-
 
 export const resolvers = {
   Query: {
@@ -19,8 +18,9 @@ export const resolvers = {
       }
       return Person.find({ phone: { $exists: args.phone === 'YES' } })
     },
-    findPerson: async (root, args) =>
-      Person.findOne({ name: args.name }),
+    findPerson: async (root, args) => {
+      return Person.findOne({ name: args.name })
+    },
     me: (root, args, context) => {
       return context.currentUser
     },

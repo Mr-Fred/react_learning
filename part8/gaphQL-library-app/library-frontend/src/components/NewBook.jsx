@@ -5,6 +5,7 @@ import { ADD_BOOK, ALL_BOOKS } from '../lib/queries'
 const NewBook = () => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
+  const [born, setBorn] = useState('')
   const [published, setPublished] = useState('')
   const [genre, setGenre] = useState('')
   const [genres, setGenres] = useState([])
@@ -23,6 +24,7 @@ const NewBook = () => {
       variables: {
         title,
         author,
+        born: parseInt(born),
         published: parseInt(published),
         genres
       }
@@ -31,6 +33,7 @@ const NewBook = () => {
     setTitle('')
     setPublished('')
     setAuthor('')
+    setBorn('')
     setGenres([])
     setGenre('')
   }
@@ -55,6 +58,14 @@ const NewBook = () => {
           <input
             value={author}
             onChange={({ target }) => setAuthor(target.value)}
+          />
+        </div>
+        <div>
+          born
+          <input
+            type="number"
+            value={born}
+            onChange={({ target }) => setBorn(target.value)}
           />
         </div>
         <div>

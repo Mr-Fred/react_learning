@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "a GraphQL backend for a small library",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,6 +23,7 @@
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "graphql": "^16.10.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose-unique-validator": "^4.0.1"
   }
 }

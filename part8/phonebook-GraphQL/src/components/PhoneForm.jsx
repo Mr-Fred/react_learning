@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useMutation } from '@apollo/client'
+import PropTypes from 'prop-types'
 
 // Queries
 import { EDIT_NUMBER, ALL_PERSONS } from '../services/queries'
@@ -8,9 +9,8 @@ const PhoneForm = ({setError}) => {
   const [name, setName] = useState('')
   const [phone, setPhone] = useState('')
 
-
-
   const [ changeNumber, result ] = useMutation(EDIT_NUMBER, {
+    refetchQueries: [ { query: ALL_PERSONS } ],
     onError: (error) => {
       const message = error.graphQLErrors[0].message
       setError(message)
@@ -21,7 +21,7 @@ const PhoneForm = ({setError}) => {
     if (result.data && result.data.editNumber === null) {
       setError('person not found')
     }
-  }, [result.data])
+  }, [result.data, setError])
 
   const submit = (event) => {
     event.preventDefault()
@@ -53,6 +53,9 @@ const PhoneForm = ({setError}) => {
       </form>
     </div>
   )
+}
+PhoneForm.propTypes = {
+  setError: PropTypes.func.isRequired
 }
 
 export default PhoneForm
