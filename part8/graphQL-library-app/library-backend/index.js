@@ -1,8 +1,4 @@
 /* eslint-disable no-undef */
-import dotenv from 'dotenv'
-dotenv.config()
-import jwt from 'jsonwebtoken'
-import User from './models/User.js'
 import { ApolloServer } from '@apollo/server'
 import { expressMiddleware } from '@apollo/server/express4'
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer'
@@ -12,17 +8,18 @@ import {useServer} from 'graphql-ws/lib/use/ws'
 import express from 'express'
 import cors from 'cors'
 import http from 'http'
+
+import context from './context/context.js';
+import * as dotenv from 'dotenv'
+import typeDefs from './schemas/index.schema.js'
+import resolvers from './resolvers/index.resolvers.js'
 import mongoose from 'mongoose'
-import { resolvers } from './graphQl/resolvers.js'
-import { typeDefs } from './graphQl/typeDefs.js'
+
+dotenv.config()
+const MONGODB_URI = process.env.MONGODB_URI
 
 mongoose.set('strictQuery', false)
-
-const MONGODB_URI = process.env.MONGODB_URI
-// const JWT_SECRET = process.env.SECRET
-
-
-mongoose.connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI,)
   .then(() => {
     console.log('connected to MongoDB')
   })
@@ -39,8 +36,9 @@ const start = async () => {
   })
 
   const schema = makeExecutableSchema({ typeDefs, resolvers })
+  
   // eslint-disable-next-line react-hooks/rules-of-hooks
-  const serverCleanup = useServer({schema}, wsServer)
+  const  serverCleanup = useServer({schema}, wsServer)
 
   const server = new ApolloServer({
     schema,
@@ -65,16 +63,7 @@ const start = async () => {
     cors(),
     express.json(),
     expressMiddleware(server, {
-      context: async ({ req }) => {
-        const auth = req ? req.headers.authorization : null
-        if (auth && auth.startsWith('Bearer ')) {
-          const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
-          const currentUser = await User.findById(decodedToken.id).populate(
-            'friends'
-          )
-          return { currentUser }
-        }
-      },
+      context,
     }),
   )
   const PORT = 4000
@@ -84,4 +73,4 @@ const start = async () => {
   )
 }
 
-start()
+start();

@@ -1,11 +1,13 @@
 import process from 'node:process'
 import dotenv from 'dotenv'
-dotenv.config()
+import {PubSub} from 'graphql-subscriptions'
 import Person from '../models/Person.js'
 import { GraphQLError } from 'graphql'
 import jwt from 'jsonwebtoken'
 import User from '../models/User.js'
 
+dotenv.config()
+const pubsub = new PubSub()
 
 const JWT_SECRET = process.env.SECRET
 
@@ -59,6 +61,7 @@ export const resolvers = {
           },
         })
       }
+      pubsub.publish('PERSON_ADDED', { personAdded: person })
       return person
     },
     addAsFriend: async (root, args, {currentUser}) => {
@@ -128,6 +131,11 @@ export const resolvers = {
         id: user._id,
       }
       return { value: jwt.sign(userForToken, JWT_SECRET) }
-  }
+    }
+  },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED'])
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useQuery, useApolloClient } from '@apollo/client'
+import { useQuery, useApolloClient, useSubscription } from '@apollo/client'
 
 // Ui components
 import Persons from './components/Persons'
@@ -12,10 +12,21 @@ import RegisterForm from './components/RegisterForm'
 // Queries
 import { ALL_PERSONS } from './services/queries'
 
+// Helpers
+import { updateCache } from './utils/helpers'
+
+
 const App = () => {
   const [token, setToken] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
   const result = useQuery(ALL_PERSONS, {})
+  useSubscription('PERSON_ADDED', {
+    onData: ({data}) => {
+      const addedPerson = data.data.personAdded
+      notify(`${addedPerson.name} was added`)
+      updateCache(client.cache, { query: ALL_PERSONS }, addedPerson)
+    }
+  })
   const client = useApolloClient()
 
   const logout = () => {

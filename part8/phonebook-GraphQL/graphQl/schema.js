@@ -55,6 +55,10 @@ export const typeDefs =`
       password: String!
     ): Token
   }
+  
+  type Subscription {
+    personAdded: Person!
+  }    
 
   enum YesNo {
     YES

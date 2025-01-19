@@ -1,5 +1,6 @@
 import {Routes, Route, Link} from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useSubscription } from "@apollo/client";
 import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
@@ -8,6 +9,8 @@ import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import UserProfile from "./components/UserProfile";
 
+import { BOOK_ADDED, ALL_BOOKS } from "./lib/queries";
+import { updateCache } from "./lib/helpers";
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState({
@@ -15,6 +18,16 @@ const App = () => {
     favoriteGenre: null,
     token: null
   })
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data, client }) => {
+      if (data?.data?.bookAdded) {
+        window.alert(`${data.data.bookAdded.title} added`);
+        updateCache(client.cache, {query: ALL_BOOKS}, data.data.bookAdded);
+      }
+    },
+  });
+  
 
   useEffect(() => {
     setCurrentUser({
