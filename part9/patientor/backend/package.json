@@ -1,0 +1,35 @@
+{
+  "name": "patientor",
+  "version": "1.0.0",
+  "description": " a simple medical record application for doctors who handle diagnoses and basic health information of their patients.",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "dev": "ts-node-dev ./index.ts",
+    "lint": "eslint . ",
+    "start": "node build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mr-Fred/react_learning.git"
+  },
+  "author": "Wilfried Adeniyi",
+  "license": "ISC",
+  "devDependencies": {
+    "@eslint/js": "^9.19.0",
+    "@stylistic/eslint-plugin": "^2.13.0",
+    "@types/eslint__js": "^8.42.3",
+    "@types/express": "^4.17.21",
+    "eslint": "^9.19.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.21.0"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  },
+  "bugs": {
+    "url": "https://github.com/Mr-Fred/react_learning/issues"
+  },
+  "homepage": "https://github.com/Mr-Fred/react_learning#readme"
+}
