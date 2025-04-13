@@ -11,6 +11,14 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+*.env
+part3\phonebook_backend\.env
+part3\notes_fullstack\.env
+part4\blog_express_backend\.env
+part8\phonebook-GraphQL\.env
+part8\gaphQL-library-app\library-backend\.env
+
 
 # Editor directories and files
 .vscode/*
