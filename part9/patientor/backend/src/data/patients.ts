@@ -1,5 +1,5 @@
 import { Patient } from "../types/types";
-import validatePatientEntry from "../utils";
+import {toNewPatientEntry} from "../utils";
 
 const data = [
   {
@@ -45,7 +45,7 @@ const data = [
 ];
 
 const patientData: Patient[] = data.map((obj) => {
-    const object = validatePatientEntry(obj) as Patient;
+    const object = toNewPatientEntry(obj) as Patient;
     object.id = obj.id;
     return object;
 });
