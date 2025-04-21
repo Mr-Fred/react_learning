@@ -8,6 +8,7 @@ import { Patient } from "./types";
 
 import patientService from "./services/patients";
 import PatientListPage from "./components/PatientListPage";
+import PatientDetailPage from "./components/Patient";
 
 const App = () => {
   const [patients, setPatients] = useState<Patient[]>([]);
@@ -35,6 +36,8 @@ const App = () => {
           <Divider hidden />
           <Routes>
             <Route path="/" element={<PatientListPage patients={patients} setPatients={setPatients} />} />
+            <Route path="/patients/:id" element={<PatientDetailPage />} />
+            <Route path="*" element={<Typography variant="h6">404 Not Found</Typography>} />
           </Routes>
         </Container>
       </Router>

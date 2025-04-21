@@ -8,11 +8,52 @@ export interface Patient {
   ssn: string;
   gender: Gender;
   occupation: string;
+  entries: Entry[];
 }
 
-export type nonSensitivePatient = Omit<Patient, 'ssn'>;
+interface BaseEntry {
+  id?: string;
+  description: string;
+  date: string;
+  specialist: string;
+  diagnosisCodes?: Array<Diagnosis['code']>;
+}
 
-export type NewPatientEntry = z.infer<typeof newPatientEntrySchema>;
+export enum EntryType {
+  HealthCheck = 'HealthCheck',
+  OccupationalHealthcare = 'OccupationalHealthcare',
+  Hospital = 'Hospital',
+}
+
+
+export enum HealthCheckRating {
+  "Healthy" = 0,
+  "LowRisk" = 1,
+  "HighRisk" = 2,
+  "CriticalRisk" = 3
+}
+
+interface HealthCheckEntry extends BaseEntry {
+  type: "HealthCheck";
+  healthCheckRating: HealthCheckRating;
+}
+
+interface OccupationalHealthcareEntry extends BaseEntry {
+  type: "OccupationalHealthcare";
+  employerName: string;
+  sickLeave?: {
+    startDate: string;
+    endDate: string;
+  };
+}
+
+interface HospitalEntry extends BaseEntry {
+  type: "Hospital";
+  discharge: {
+    date: string;
+    criteria: string;
+  };
+}
 
 export enum Gender {
   Male = 'male',
@@ -25,3 +66,14 @@ export interface Diagnosis {
   name: string;
   latin?: string;
 }
+
+export type nonSensitivePatient = Omit<Patient, 'ssn'>;
+
+export type NewPatientEntry = z.infer<typeof newPatientEntrySchema>;
+
+export type Entry = HealthCheckEntry | OccupationalHealthcareEntry | HospitalEntry;
+
+// Define special omit for unions
+type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+// Define Entry without the 'id' property
+export type EntryWithoutId = UnionOmit<Entry, 'id'>; 
