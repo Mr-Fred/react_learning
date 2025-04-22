@@ -5,3 +5,7 @@ build
 .idea/
 .vscode/
 .eslintcache
+
+./part10/.expo/
+./part10/.gitignore
+./part10/node_modules
