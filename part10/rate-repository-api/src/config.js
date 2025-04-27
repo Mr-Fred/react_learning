@@ -1,15 +1,16 @@
 import dotenv from 'dotenv';
 import path from 'path';
+import { fileURLToPath } from 'url'; // Import to handle __dirname in ES Modules
 import { knexSnakeCaseMappers } from 'objection';
+import knexfile from '../knexfile.js';
 
-import knexfile from '../knexfile';
+// Define __dirname for ES Modules
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 
 export const API_PORT = process.env.PORT || 5000;
-
 export const APOLLO_PORT = process.env.APOLLO_PORT || 4000;
-
 export const JWT_SECRET = process.env.JWT_SECRET;
 
 export const KNEX_CONFIG = {

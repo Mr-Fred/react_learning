@@ -9,6 +9,8 @@ build
 ./part10/.expo/
 ./part10/.gitignore
 ./part10/node_modules
+./part10/rate-repository-api/.env
+./part10/rate-repository-api/.env.local
 
 ./prettierignore
 ./eslintignore

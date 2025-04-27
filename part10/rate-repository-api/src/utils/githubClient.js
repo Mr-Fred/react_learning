@@ -1,17 +1,19 @@
 import LRUCache from 'lru-cache';
 import { ApolloError } from 'apollo-server';
-import { pick, get } from 'lodash';
+import lodash from 'lodash';
 import axios from 'axios';
 
 import {
   GITHUB_API_URL,
   GITHUB_CLIENT_ID,
   GITHUB_CLIENT_SECRET,
-} from '../config';
+} from '../config.js';
 
 const oneHour = 1000 * 60 * 60;
 
 const HTTP_CLIENT_ERROR = Symbol();
+
+const { pick, get }= lodash;
 
 const isNotFoundError = error =>
   get(error[HTTP_CLIENT_ERROR], 'response.status') === 404;

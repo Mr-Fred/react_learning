@@ -1,9 +1,10 @@
 import http from 'http';
 
-import logger from './utils/logger';
-import { API_PORT, APOLLO_PORT } from './config';
-import createApolloServer from './apolloServer';
-import app from './app';
+// Fix the import path for logger
+import logger from './utils/logger.js'; 
+import { API_PORT, APOLLO_PORT } from './config.js';
+import createApolloServer from './apolloServer.js';
+import app from './app.js';
 
 const startServer = async () => {
   const httpServer = http.createServer(app);
@@ -20,5 +21,4 @@ const startServer = async () => {
 
   logger.info(`Apollo Server ready at http://localhost:${APOLLO_PORT}`);
 };
-
 startServer();

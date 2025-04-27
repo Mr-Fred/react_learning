@@ -2,7 +2,7 @@ import { gql } from 'apollo-server';
 import { raw } from 'objection';
 import * as yup from 'yup';
 
-import Repository from '../../models/Repository';
+import Repository from '../../models/Repository.js';
 
 export const typeDefs = gql`
   enum AllRepositoriesOrderBy {
