@@ -58,7 +58,7 @@ export const resolvers = {
         searchKeyword,
         ownerName,
       } = normalizedArgs;
-
+      
       const orderColumn = orderColumnByOrderBy[orderBy];
 
       let query = Repository.query();

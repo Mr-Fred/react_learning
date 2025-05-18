@@ -4,6 +4,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import Text from './Text';
 import theme from '../theme';
+import useSignIn from '../hooks/useSignIn';
 
 // Initial values
 const initialValues = {
@@ -24,9 +25,15 @@ const validationSchema = Yup.object().shape({
 const SignIn = () => {
   // Create refs for the inputs
   const passwordInputRef = useRef(null);
+  const [signIn] = useSignIn();
 
   const onSubmit = (values) => {
-    console.log('SignIn form values:', values);
+    const { username, password } = values;
+    signIn({ username, password })
+      .catch((error) => {
+        // Handle sign-in error
+        console.error('Sign-in error:', error);
+      });
   };
 
   return (

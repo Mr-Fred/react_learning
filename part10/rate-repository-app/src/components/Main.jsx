@@ -5,6 +5,7 @@ import { Route, Routes, Navigate } from 'react-router-native';
 import RepositoryList from './RepositoryList';
 import AppBar from './AppBar';
 import SignIn from './SignIn';
+// import SignOut from "./SignOut";
 
 const styles = StyleSheet.create({
   container: {
@@ -16,12 +17,16 @@ const styles = StyleSheet.create({
 });
 
 const Main = () => {
+
   return (
     <View>
       <AppBar />
       <Routes>
-        <Route path="/" element={<RepositoryList />}/>
+        <Route path="/" element={<RepositoryList />} />
         <Route path="/signin" element={<SignIn />} />
+        {/* <Route path="/signout" element={<SignOut />} /> */}
+        {/* Add other routes here */}
+        {/* Redirect any unknown routes to the home page */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </View>

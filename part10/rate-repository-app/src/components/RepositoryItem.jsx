@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
 import theme from '../theme'; 
-import Utils from '../utils'; 
+import Utils from '../utils/utils'; 
 
 const styles = StyleSheet.create({
   container: {

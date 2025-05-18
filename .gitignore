@@ -6,11 +6,13 @@ build
 .vscode/
 .eslintcache
 
-./part10/.expo/
-./part10/.gitignore
-./part10/node_modules
+./part10/rate-repository-app/.expo/
+./part10/rate-repository-app/.gitignore
 ./part10/rate-repository-api/.env
 ./part10/rate-repository-api/.env.local
+./part10/rate-repository-app/.env
+./part10/rate-repository-app/.env.local
+./part10/rate-repository-app/node_modules
 
 ./prettierignore
 ./eslintignore
