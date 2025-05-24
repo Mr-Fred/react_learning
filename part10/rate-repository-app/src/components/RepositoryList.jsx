@@ -19,21 +19,11 @@ const styles = StyleSheet.create({
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
-const RepositoryList = () => {
-  // const { repositories } = useRepositories();
-  const { data, loading, error } = useQuery(GET_REPOSITORIES, {
-    fetchPolicy: 'cache-and-network',
-  });
+export const RepositoryListContainer = ({ repositories }) => {
+  const repositoryNodes = repositories
+    ? repositories.edges.map((edge) => edge.node)
+    : [];
 
-  if (loading) return <Text>Loading...</Text>;
-  if (error) return <Text>Error: {error.message}</Text>;
-  if (!data || !data.repositories) return null;
-  const repositoryNodes = data?.repositories?.edges?.map(
-    edge => edge.node
-  ) || [];
-    
-  // if (!repositories) return null;
-  // const repositoryNodes = repositories.edges.map(edge => edge.node);
   return (
     <FlatList
       data={repositoryNodes}
@@ -43,5 +33,20 @@ const RepositoryList = () => {
     />
   );
 };
+
+const RepositoryList = () => {
+   const { data, loading, error } = useQuery(GET_REPOSITORIES, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>Error: {error.message}</Text>;
+  if (!data || !data.repositories) return null;
+
+  const repositories = data.repositories;
+
+  return <RepositoryListContainer repositories={repositories} />;
+};
+
 
 export default RepositoryList;

@@ -21,21 +21,8 @@ const validationSchema = Yup.object().shape({
     .required('Password is required'),
 });
 
-// Main component
-const SignIn = () => {
-  // Create refs for the inputs
-  const passwordInputRef = useRef(null);
-  const [signIn] = useSignIn();
-
-  const onSubmit = (values) => {
-    const { username, password } = values;
-    signIn({ username, password })
-      .catch((error) => {
-        // Handle sign-in error
-        console.error('Sign-in error:', error);
-      });
-  };
-
+export const SignInContainer = ({ onSubmit, passwordInputRef }) => {
+  
   return (
 
       <View style={styles.pageContainer}>
@@ -86,7 +73,7 @@ const SignIn = () => {
                 onPress={handleSubmit}
                 style={styles.button}
               >
-                <Text style={styles.buttonText}>
+                <Text testID="signInButton" style={styles.buttonText}>
                   Sign In
                 </Text>
               </Pressable>
@@ -95,6 +82,30 @@ const SignIn = () => {
         </Formik>
       </View>
   );
+
+}
+
+// Main component
+const SignIn = () => {
+  // Create refs for the inputs
+  const passwordInputRef = useRef(null);
+  const [signIn] = useSignIn();
+
+  const onSubmit = (values) => {
+    const { username, password } = values;
+    signIn({ username, password })
+      .catch((error) => {
+        // Handle sign-in error
+        console.error('Sign-in error:', error);
+      });
+  };
+  return (
+    <SignInContainer
+      onSubmit={onSubmit}
+      passwordInputRef={passwordInputRef} // pass the ref to the container
+    />
+  );
+
 };
 
 // Styles

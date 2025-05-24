@@ -41,4 +41,9 @@ export default defineConfig([{
         "react/prop-types": "off",
         "react/react-in-jsx-scope": "off",
     },
+    extends: ["eslint:recommended", "plugin:react/recommended", "plugin:jest/recommended"],
+    parser: "@babel/eslint-parser",
+    env: {
+        "react-native/react-native": true
+    },
 }]);
