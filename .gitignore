@@ -13,6 +13,7 @@ part10/rate-repository-api/.env.local
 part10/rate-repository-app/.env
 part10/rate-repository-app/.env.local
 part10/rate-repository-app/node_modules
+part10/rate-repository-api/node_modules
 
 ./prettierignore
 ./eslintignore
