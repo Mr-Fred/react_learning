@@ -10,13 +10,23 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: part11-ci-cd-systems
+          
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-        # No working-directory needed here if you install globally
+
       - name: Install Dependencies
         run: npm install
         working-directory: part11
+
       - name: Check style
         run: npm run eslint
+        working-directory: part11
+
+      - name: Build
+        run: npm run build
+        working-directory: part11
+
+      - name: Run Tests
+        run: npm run test -- --watchAll=false
         working-directory: part11
