@@ -8,6 +8,9 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: part11-ci-cd-systems
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
