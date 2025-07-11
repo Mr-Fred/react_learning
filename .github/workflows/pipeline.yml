@@ -13,8 +13,8 @@ jobs:
 
       - name: cd to project directory
         run: cd part11
-      # - name: List checked out files
-      #   run: ls -al
+      - name: List checked out files
+        run: ls -al
 
       - uses: actions/setup-node@v4
         with:
