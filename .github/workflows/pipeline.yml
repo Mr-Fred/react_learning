@@ -11,8 +11,10 @@ jobs:
         with:
           ref: part11-ci-cd-systems
 
-      - name: List checked out files
-        run: ls -alR
+      - name: cd to project directory
+        run: cd part11
+      # - name: List checked out files
+      #   run: ls -al
 
       - uses: actions/setup-node@v4
         with:
