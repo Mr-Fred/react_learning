@@ -2,7 +2,7 @@ name: hello-world
 on:
   push:
     branches:
-      - part11-ci-cd-systems
+      - main
 jobs:
   hello-world:
     runs-on: ubuntu-latest
