@@ -31,9 +31,9 @@ const PokemonPage = ({ previous, next }) => {
   return (
     <>
       <div className="links">
-        {previous && <Link to={`/pokemon/${previous.name}`}>Previous</Link>}
+        {previous ? <Link to={`/pokemon/${previous.name}`}>Previous</Link> : <span></span>}
         <Link to="/">Home</Link>
-        {next && <Link to={`/pokemon/${previous.name}`}>Next</Link>}
+        {next ? <Link to={`/pokemon/${next.name}`}>Next</Link> : <span></span>}
       </div>
       <div className={`pokemon-page pokemon-type-${type.name}`}>
         <div className="pokemon-image" style={{ backgroundImage: `url(${pokemon.sprites.front_default})` }} />
@@ -60,6 +60,7 @@ const PokemonPage = ({ previous, next }) => {
     </>
   )
 }
+
 PokemonPage.propTypes = {
   previous: PropTypes.shape({
     name: PropTypes.string
