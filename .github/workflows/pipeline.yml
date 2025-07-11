@@ -11,6 +11,9 @@ jobs:
         with:
           ref: part11-ci-cd-systems
 
+      - name: List checked out files
+        run: ls -alR
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
