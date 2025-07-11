@@ -10,16 +10,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: part11-ci-cd-systems
-
-      - name: cd to project directory
-        run: cd part11
-      - name: List checked out files
-        run: ls -al
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+        # No working-directory needed here if you install globally
       - name: Install Dependencies
         run: npm install
+        working-directory: part11
       - name: Check style
         run: npm run eslint
+        working-directory: part11
