@@ -1,4 +1,6 @@
+
 {
+  // VSCode: If you see schema errors, you can safely ignore them or remove schema associations in your settings.
   "env": {
     "browser": true,
     "es2021": true,
@@ -17,9 +19,8 @@
       "jsx": true
     }
   },
-  "plugins": [
-    "react"
-  ],
+  "plugins": ["react"],
+  "ignorePatterns": ["dist/", "node_modules/"],
   "settings": {
     "react": {
       "version": "detect"
