@@ -7,11 +7,10 @@
   "scripts": {
     "dev": "webpack-dev-server --open --mode development",
     "start-prod": "node app.js",
-    "start": "npm run build && npm run start-prod",
     "test": "jest",
     "eslint": "eslint . --ext .js,.jsx",
     "build": "webpack --mode production",
-    "e2e": "playwright test"
+    "test:e2e": "playwright test"
   },
   "repository": {
     "type": "git",
