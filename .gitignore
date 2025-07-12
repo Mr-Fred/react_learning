@@ -18,24 +18,42 @@ part10/rate-repository-app/node_modules
 ./eslintignore
 ./gitattribute
 
+# Ignore environment variable files
+.env
+.env.*
+*.env
+*.env.*
+
+# Ignore log files
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore OS and editor files
 .DS_Store
-node_modules
-coverage
-build
-.idea/
-.vscode/
-.eslintcache
+Thumbs.db
 
-part10/rate-repository-app/.expo/
-part10/rate-repository-app/.gitignore
-part10/rate-repository-api/.env
-part10/rate-repository-api/.env.local
-part10/rate-repository-app/.env
-part10/rate-repository-app/.env.local
-part10/rate-repository-app/node_modules
-part10/rate-repository-api/node_modules
+# Ignore build output
+dist/
+build/
 
-./prettierignore
-./eslintignore
-./gitattribute
+# Ignore sensitive config files
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Ignore credentials and secret files
+*credentials*
+*secrets*
+.secret
+.secret.*
+
+# Ignore Fly.io secrets (if any)
+fly.secrets.*
+fly.toml.local
+
 
