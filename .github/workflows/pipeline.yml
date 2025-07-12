@@ -46,6 +46,6 @@ jobs:
           retention-days: 7
 
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only
+      - run: flyctl deploy --remote-only -a part11-silent-silence-5676
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
