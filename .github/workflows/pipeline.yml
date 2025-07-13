@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: part11-ci-cd-systems
-          
+
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -35,14 +35,14 @@ jobs:
       - name: Run Tests
         run: npm run test -- --watchAll=false
         working-directory: part11
-      
+
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
       - name: e2e tests
         run: npm run test:e2e
         working-directory: part11
-        
+
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
@@ -51,11 +51,13 @@ jobs:
           retention-days: 7
 
       - name: Setup flyctl
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' }}
+        # Skip setup if the commit message contains #skip for push events on the target branch
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' && !contains(github.event.head_commit.message, '#skip') }}
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' }}
+        # Skip deployment if the commit message contains #skip for push events on the target branch
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' && !contains(github.event.head_commit.message, '#skip') }}
         run: flyctl deploy --remote-only -a pokedex-app-6035
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
@@ -64,7 +66,8 @@ jobs:
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-24.04
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' }}
+    # Skip tagging if the commit message contains #skip for push events on the target branch
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' && !contains(github.event.head_commit.message, '#skip') }}
     steps:
       - uses: actions/checkout@v4
         with:
