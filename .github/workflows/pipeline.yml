@@ -1,6 +1,6 @@
 name: Deployment Pipeline
 on:
-  push:
+  pull_request:
     branches:
       - part11-ci-cd-systems
 jobs:
