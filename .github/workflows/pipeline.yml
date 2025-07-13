@@ -1,8 +1,9 @@
 name: Deployment Pipeline
 on:
   pull_request:
-    branches:
-      - part11-ci-cd-systems
+    branches: [part11-ci-cd-systems]
+    types: [opened, synchronize]
+    
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-24.04
