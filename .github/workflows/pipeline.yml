@@ -1,13 +1,12 @@
 name: Deployment Pipeline
 on:
-  # push:
-  #   branches:
-  #     - part11-ci-cd-systems
-
   pull_request:
     branches: [part11-ci-cd-systems]
     types: [opened, synchronize]
 
+  push:
+    branches:
+      - part11-ci-cd-systems
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-24.04
@@ -21,7 +20,7 @@ jobs:
           node-version: '20'
 
       - name: Install Dependencies
-        run: npm install
+        run: npm ci
         working-directory: part11
 
       - name: Check style
@@ -50,8 +49,13 @@ jobs:
           path: playwright-report/
           retention-days: 7
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only -a pokedex-app-6035
+      - name: Setup flyctl
+        if: ${{ github.event_name == 'push' }}
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        if: ${{ github.event_name == 'push' }}
+        run: flyctl deploy --remote-only -a pokedex-app-6035
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         working-directory: part11
