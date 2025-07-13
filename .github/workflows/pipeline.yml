@@ -51,22 +51,51 @@ jobs:
           retention-days: 7
 
       - name: Setup flyctl
-        # Skip setup if the commit message contains #skip for push events on the target branch
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' && !contains(github.event.head_commit.message, '#skip') }}
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        # Skip deployment if the commit message contains #skip for push events on the target branch
+        id: deploy_step # Add an ID to reference this step later
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' && !contains(github.event.head_commit.message, '#skip') }}
         run: flyctl deploy --remote-only -a pokedex-app-6035
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         working-directory: part11
 
+      - name: Notify Discord on successful deployment
+        # This step runs only if the previous 'Deploy to Fly.io' step was successful
+        if: ${{ success() && steps.deploy_step.outcome == 'success' }}
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: GitHub Actions Deploy
+          avatarUrl: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          severity: info
+          title: "🚀 A new version of Pokedex deployed"
+          description: |
+            to [https://pokedex-app-6035.fly.dev](https://pokedex-app-6035.fly.dev) by ${{ github.actor }}
+
+      - name: Notify Discord on build failure
+        # This step runs if any previous step in the job failed
+        if: ${{ failure() }}
+        uses: rjstone/discord-webhook-notify@v2.2.1
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          username: GitHub Actions Build
+          avatarUrl: https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png
+          severity: error
+          title: "❌ Build failed"
+          description: |
+            commit
+            [${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) by ${{ github.actor }} broke the build :(
+          details: |
+            **Workflow Run:** [${{ github.workflow }} run ${{ github.run_number }}](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            **Branch:** `${{ github.ref_name }}`
+            **Commit Message:** `${{ github.event.head_commit.message }}`
+
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-24.04
-    # Skip tagging if the commit message contains #skip for push events on the target branch
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' && !contains(github.event.head_commit.message, '#skip') }}
     steps:
       - uses: actions/checkout@v4
@@ -79,4 +108,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_PREFIX: v
           DEFAULT_BUMP: patch
-          
+          DRY_RUN: "true"
