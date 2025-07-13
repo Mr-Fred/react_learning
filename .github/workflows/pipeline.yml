@@ -1,9 +1,9 @@
 name: Deployment Pipeline
 on:
-  push:
-    branches:
-      - part11-ci-cd-systems
-      
+  # push:
+  #   branches:
+  #     - part11-ci-cd-systems
+
   pull_request:
     branches: [part11-ci-cd-systems]
     types: [opened, synchronize]
