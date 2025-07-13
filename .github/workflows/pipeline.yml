@@ -1,4 +1,5 @@
-name: Deployment Pipeline
+name: Deployment pipeline
+
 on:
   pull_request:
     branches: [part11-ci-cd-systems]
@@ -50,18 +51,29 @@ jobs:
           retention-days: 7
 
       - name: Setup flyctl
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' }}
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' }}
         run: flyctl deploy --remote-only -a pokedex-app-6035
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         working-directory: part11
-        
+
+  tag_release:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-24.04
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: part11-ci-cd-systems
+
       - name: Bump version and push tag
         uses: anothrNick/github-tag-action@1.73.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_PREFIX: v
+          DEFAULT_BUMP: patch
+          DRY_RUN: "true"
