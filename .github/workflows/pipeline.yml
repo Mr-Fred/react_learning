@@ -51,10 +51,12 @@ jobs:
           retention-days: 7
 
       - name: Setup flyctl
+        # Skip setup if the commit message contains #skip for push events on the target branch
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' && !contains(github.event.head_commit.message, '#skip') }}
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
+        # Skip deployment if the commit message contains #skip for push events on the target branch
         id: deploy_step # Add an ID to reference this step later
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' && !contains(github.event.head_commit.message, '#skip') }}
         run: flyctl deploy --remote-only -a pokedex-app-6035
@@ -96,6 +98,7 @@ jobs:
   tag_release:
     needs: [simple_deployment_pipeline]
     runs-on: ubuntu-24.04
+    # Skip tagging if the commit message contains #skip for push events on the target branch
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/part11-ci-cd-systems' && !contains(github.event.head_commit.message, '#skip') }}
     steps:
       - uses: actions/checkout@v4
@@ -108,4 +111,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG_PREFIX: v
           DEFAULT_BUMP: patch
-          DRY_RUN: "true"
+          
