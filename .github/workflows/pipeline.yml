@@ -2,7 +2,7 @@ name: Deployment Pipeline
 on:
   pull_request:
     branches: [part11-ci-cd-systems]
-    types: [opened, synchronize]
+    types: [opened, synchronize, closed]
 
   push:
     branches:
@@ -59,3 +59,9 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         working-directory: part11
+        
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.73.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_PREFIX: v
