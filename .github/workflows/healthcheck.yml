@@ -1,0 +1,16 @@
+name: Health Check
+
+on:
+  schedule:
+    # Runs once a day at midnight UTC.
+    - cron: '0 0 * * *'
+
+jobs:
+  health_check_job:
+    runs-on: ubuntu-24.04
+    name: Check health of the deployed application
+    steps:
+      - name: URL Health Check
+        uses: jtalk/url-health-check-action@v4
+        with:
+          url: https://pokedex-app-6035.fly.dev/
