@@ -22,4 +22,4 @@ noteSchema.set('toJSON', {
 })
 
 // eslint-disable-next-line no-undef
-module.exports = mongoose.model('Note', noteSchema)
+module.exports = mongoose.models.Note || mongoose.model('Note', noteSchema)

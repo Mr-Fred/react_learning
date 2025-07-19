@@ -1,39 +1,33 @@
-# syntax = docker/dockerfile:1
+## /Dockerfile
 
-# Adjust NODE_VERSION as desired
-ARG NODE_VERSION=20.10.0
-FROM node:${NODE_VERSION}-slim as base
+# 1. Build the frontend
+FROM node:20-alpine AS frontend-builder
+WORKDIR /usr/src/app
+COPY part2/notes_frontend/package*.json ./part2/notes_frontend/
+RUN cd part2/notes_frontend && npm ci
+COPY part2/notes_frontend/ ./part2/notes_frontend/
+RUN cd part2/notes_frontend && npm run build
 
-LABEL fly_launch_runtime="Node.js"
+# 2. Build the backend
+FROM node:20-alpine AS backend-builder
+WORKDIR /usr/src/app
+COPY part3/notes_fullstack/package*.json ./part3/notes_fullstack/
+RUN cd part3/notes_fullstack && npm ci --omit=dev
 
-# Node.js app lives here
-WORKDIR /app
+# 3. Create the final production image
+FROM node:20-alpine
+WORKDIR /usr/src/app
+ENV NODE_ENV=production
 
-# Set production environment
-ENV NODE_ENV="production"
+# Copy backend dependencies
+COPY --from=backend-builder /usr/src/app/part3/notes_fullstack/node_modules ./node_modules
+# Copy backend source code
+COPY part3/notes_fullstack/ ./
+# Copy built frontend
+COPY --from=frontend-builder /usr/src/app/part2/notes_frontend/dist ./dist
 
+# The build:ui script is no longer needed inside the Dockerfile
+# as we built the UI in a separate stage.
 
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
-
-# Install node modules
-COPY package-lock.json package.json ./
-RUN npm ci
-
-# Copy application code
-COPY . .
-
-
-# Final stage for app image
-FROM base
-
-# Copy built application
-COPY --from=build /app /app
-
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 3000
-CMD [ "node", "index.js" ]
+EXPOSE 3001
+CMD ["node", "index.js"]

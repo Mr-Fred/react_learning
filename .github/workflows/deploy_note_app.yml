@@ -1,0 +1,94 @@
+name: Build, Test, and Deploy to Cloud Run
+
+on:
+  pull_request:
+    branches:
+      - fullstackopen_course
+    types: [opened, synchronize, closed]
+  push:
+    branches:
+      - fullstackopen_course
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  SERVICE_NAME: notes-app-service
+  REGION: us-central1
+  GAR_LOCATION: us-central1 # Location for Artifact Registry
+
+jobs:
+  build-and-test:
+    if: github.event_name == 'pull_request'
+    name: Build and Test
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+
+      - name: Install backend dependencies
+        working-directory: ./part3/notes_fullstack
+        run: npm ci
+
+      - name: Lint backend code
+        working-directory: ./part3/notes_fullstack
+        run: npm run lint
+
+      - name: Install frontend dependencies
+        working-directory: ./part2/notes_frontend
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: ./part2/notes_frontend
+        run: npx playwright install --with-deps
+
+      - name: Start backend server for E2E tests
+        working-directory: ./part3/notes_fullstack
+        run: npm run start:test &
+
+      - name: Run Playwright E2E tests
+        working-directory: ./part2/notes_frontend
+        run: npm test
+
+  build-and-deploy:
+    if: github.event_name == 'push'
+    name: Build and Deploy
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Required for Workload Identity Federation
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_SA_EMAIL }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker ${{ env.GAR_LOCATION }}-docker.pkg.dev
+
+      - name: Build and push Docker image to Artifact Registry
+        working-directory: ./part3/notes_fullstack
+        run: |
+          docker build . -t ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}:latest
+          docker push ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}:latest
+
+      - name: Deploy image to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image ${{ env.GAR_LOCATION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}:latest \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated

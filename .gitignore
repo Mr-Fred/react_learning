@@ -1,33 +1,63 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
 # Logs
-logs
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+*.crash
 
-node_modules
-dist
-dist-ssr
-*.local
+# Dependency directories
+node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+dist/
+dist-ssr/
+build/
+.next/
+out/
+
+# Environment variables & Sensitive Files
+# Ignore all .env files, but not .env.example or .env.ci
 .env
+.env.*
 *.env
-part3\phonebook_backend\.env
-part3\notes_fullstack\.env
-part4\blog_express_backend\.env
-part8\phonebook-GraphQL\.env
-part8\gaphQL-library-app\library-backend\.env
+!.env.example
+!.env.ci
 
+# Ignore other sensitive files like private keys
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
+!.vscode/settings.json
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-../task_mgt_dashboard.html
+
+# Terraform
+# Never commit terraform state files
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Misc
+*.local
