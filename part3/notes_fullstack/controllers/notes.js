@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken')
 
 
 const getTokenFromReq = req => {
-  
+
   const auth = req.get('Authorization')
   if(auth && auth.startsWith('Bearer')){
     return auth.replace('Bearer ', '')
@@ -16,8 +16,8 @@ const getTokenFromReq = req => {
 notesRouter.get('/', async (req, res) => {
   const notes = await Note
     .find({})
-    .populate('user', {username: 1, name: 1})
-  
+    .populate('user', { username: 1, name: 1 })
+
   res.json(notes)
 })
 
@@ -31,7 +31,7 @@ notesRouter.post('/', async (req, res) => {
 
   const decodedToken = jwt.verify(getTokenFromReq(req), process.env.SECRET)
   if(!decodedToken.id){
-    return res.status(401).json({error: 'invalid token'})
+    return res.status(401).json({ error: 'invalid token' })
   }
   const user = await User.findById(decodedToken.id)
 
@@ -54,10 +54,10 @@ notesRouter.delete('/:id', async (req, res) => {
 })
 
 notesRouter.put('/:id', async (req, res) => {
-  const {content, important} = req.body
-  const updatedNote = await Note.findByIdAndUpdate(req.params.id, {content, important},
+  const { content, important } = req.body
+  const updatedNote = await Note.findByIdAndUpdate(req.params.id, { content, important },
     { new: true, runValidators: true, context: 'query' })
   res.json(updatedNote)
 })
 
-module.exports = notesRouter;
+module.exports = notesRouter

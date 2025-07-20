@@ -1,4 +1,4 @@
-const {test, after, beforeEach, describe} = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const supertest = require('supertest')
@@ -44,12 +44,12 @@ describe('when there is initially some notes saved', () => {
     test('a specific note can be viewed', async () => {
       const noteAtStart = await testHelpers.notesInDb()
       const noteToView = noteAtStart[0]
-    
+
       const resultNote = await api
         .get(`/api/notes/${noteToView.id}`)
         .expect(200)
         .expect('Content-Type', /application\/json/)
-    
+
       assert.deepStrictEqual(resultNote.body, noteToView)
     })
 
@@ -61,7 +61,7 @@ describe('when there is initially some notes saved', () => {
         .expect(404)
     })
 
-    
+
     test('fails with statuscode 400 id is invalid', async () => {
       const invalidId = '5a3d5da59070081a82a3445'
 
@@ -111,15 +111,15 @@ describe('when there is initially some notes saved', () => {
     test('succeeds with status code 204 if id is valid', async () => {
       const noteAtStart = await testHelpers.notesInDb()
       const noteToDelete = noteAtStart[0]
-    
+
       await api
         .delete(`/api/notes/${noteToDelete.id}`)
         .expect(204)
-    
+
       const notesAtEnd = await testHelpers.notesInDb()
       const contents = notesAtEnd.map(r => r.content)
       assert(!contents.includes(noteToDelete.content))
-    
+
       assert.strictEqual(notesAtEnd.length, testHelpers.initialNotes.length - 1)
     })
   })

@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test'
-import helpers from './helper'
+const { test, expect } = require('@playwright/test')
+const helpers = require('./helper')
 
 test.describe('Note App', () => {
   test.beforeEach(async ({ page, request }) => {

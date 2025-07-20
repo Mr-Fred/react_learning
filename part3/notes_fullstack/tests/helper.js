@@ -12,4 +12,4 @@ const createNote = async (page, content) => {
   // await page.getByText(content).waitFor()
 }
 
-export default { loginWith, createNote }
+module.exports = { loginWith, createNote }
