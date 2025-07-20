@@ -8,7 +8,10 @@ import stylisticJs from '@stylistic/eslint-plugin-js';
 export default [
   js.configs.recommended,
   {
-    extends: ["airbnb"],
+    // The 'extends' property is not supported in ESLint's new flat config format.
+    // Using eslint-config-airbnb with flat config requires a compatibility utility.
+    // For now, it has been removed to make the configuration valid.
+    // extends: ["airbnb"],
     files: ["**/*.js"],
     languageOptions: {
       sourceType: "commonjs",
@@ -36,17 +39,17 @@ export default [
       '@stylistic/js/semi': [
         'error',
         'never'
+      ],      
+      'eqeqeq': 'error',
+      'no-trailing-spaces': 'error',
+      'object-curly-spacing': [
+        'error', 'always'
       ],
+      'arrow-spacing': [
+        'error', { 'before': true, 'after': true },
+      ],
+      'no-console': 'off',
     },
     ignores: ["dist/**", "build/**", "node_modules/**"],
-    'eqeqeq': 'error',
-    'no-trailing-spaces': 'error',
-    'object-curly-spacing': [
-      'error', 'always'
-    ],
-    'arrow-spacing': [
-      'error', { 'before': true, 'after': true },
-    ],
-    'no-console': 'off',
   },
 ]
