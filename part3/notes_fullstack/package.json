@@ -14,7 +14,7 @@
     "test": "cross-env NODE_ENV=test node --test tests/*.js",
     "start:test": "cross-env NODE_ENV=test PORT=3001 node index.js",
     "test:e2e": "playwright test"
-  },
+},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Mr-Fred/react_learning.git#fullstackopen_course"
