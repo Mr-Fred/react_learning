@@ -45,7 +45,7 @@ test.describe('Note App', () => {
       test.beforeEach(async ({ page }) => {
         await helpers.createNote(page, 'first note by Playwright')
         await helpers.createNote(page, 'second note by Playwright')
-        await helpers.createNote(page, 'another note by Playwright')
+        // await helpers.createNote(page, 'another note by Playwright')
       })
       test('importance can be changed', async ({ page }) => {
         await page.getByRole('button', { name: 'make not important' }).click()

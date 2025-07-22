@@ -1,3 +1,4 @@
+require('dotenv').config()
 const config = require('./utils/config')
 const logger = require('./utils/logger')
 require('express-async-errors')
@@ -27,6 +28,7 @@ app.use(cors())
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(middleware.requestLogger)
+app.use(middleware.tokenExtractor)
 
 app.use('/api/notes', notesRouter)
 app.use('/api/users', usersRouter)

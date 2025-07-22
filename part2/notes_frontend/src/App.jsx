@@ -42,17 +42,21 @@ const App = () => {
     ? notes
     : notes.filter(note => note.important)
 
-  const createNote = (noteObject) => {
-    noteFormRef.current.toggleVisibility()
-    noteService
-      .create(noteObject)
-      .then(returnedNote => {
-        setNotes(notes.concat(returnedNote))
-        setErrorMessage('a new note successfully added')
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-      })
+  const createNote = async (noteObject) => {
+    try {
+      noteFormRef.current.toggleVisibility()
+      const returnedNote = await noteService.create(noteObject)
+      setNotes(notes.concat(returnedNote))
+      setErrorMessage('a new note successfully added')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    } catch (error) {
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
   }
 
   const toggleImportanceOf = (id) => {
@@ -85,6 +89,7 @@ const App = () => {
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
+      throw exception
     }
   }
   const logoutApp = () => {

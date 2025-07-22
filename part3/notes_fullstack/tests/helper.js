@@ -1,3 +1,4 @@
+
 const loginWith = async (page, username, password)  => {
   await page.getByRole('button', { name: 'login' }).click()
   await page.getByTestId('username').fill(username)
@@ -9,7 +10,6 @@ const createNote = async (page, content) => {
   await page.getByRole('button', { name: 'new note' }).click()
   await page.getByRole('textbox').fill(content)
   await page.getByRole('button', { name: 'save' }).click()
-  // await page.getByText(content).waitFor()
 }
 
 module.exports = { loginWith, createNote }

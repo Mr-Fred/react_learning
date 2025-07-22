@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Note = require('../models/Note')
-const testHelpers = require('../tests/test_helper')
+const testHelpers = require('./test_helper')
 
 const api = supertest(app)
 

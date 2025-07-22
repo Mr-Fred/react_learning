@@ -6,6 +6,9 @@ import stylisticJs from '@stylistic/eslint-plugin-js';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
+  {
+    ignores: ['dist/**', 'build/**', 'node_modules/**'],
+  },
   js.configs.recommended,
   {
     // The 'extends' property is not supported in ESLint's new flat config format.
@@ -50,6 +53,5 @@ export default [
       ],
       'no-console': 'off',
     },
-    ignores: ["dist/**", "build/**", "node_modules/**"],
   },
 ]
