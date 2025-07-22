@@ -60,4 +60,9 @@ out/
 Thumbs.db
 
 # Misc
+<<<<<<< HEAD
 *.local
+
+=======
+*.local 
+>>>>>>> 53c7715 (fix(lint): Correct ESLint configuration and dependencies)

@@ -1,0 +1,24 @@
+# Git
+.git
+.gitignore
+
+# Node
+node_modules
+part2/notes_frontend/node_modules
+part3/notes_fullstack/node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test artifacts
+part3/notes_fullstack/tests
+part3/notes_fullstack/playwright-report
+part3/notes_fullstack/test-results
+
+# Fly.io config (not needed for this deployment)
+part3/notes_fullstack/fly.toml
+
+# Env files
+.env
+part3/notes_fullstack/.env

@@ -1,0 +1,6 @@
+{
+  "git.ignoreLimitWarning": true,
+  "IDX.aI.enableInlineCompletion": true,
+  "IDX.aI.enableCodebaseIndexing": true,
+  "postman.settings.dotenv-detection-notification-visibility": false
+}

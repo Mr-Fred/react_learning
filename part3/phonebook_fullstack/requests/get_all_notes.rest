@@ -1,0 +1,15 @@
+GET http://localhost:3001/api/phonebook
+
+###
+GET http://localhost:3001/api/phonebook/4
+
+###
+POST http://localhost:3001/api/phonebook HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Mike Pompeo"
+}
+
+###
+GET http://localhost:3001/info
