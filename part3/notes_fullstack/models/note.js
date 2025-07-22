@@ -21,5 +21,4 @@ noteSchema.set('toJSON', {
   }
 })
 
-
 module.exports = mongoose.models.Note || mongoose.model('Note', noteSchema)
