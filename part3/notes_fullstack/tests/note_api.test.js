@@ -4,17 +4,36 @@ const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 const Note = require('../models/Note')
+const User = require('../models/User')
 const testHelpers = require('./test_helper')
 
 const api = supertest(app)
 
 describe('when there is initially some notes saved', () => {
+  let token
+
   beforeEach(async () => {
     await Note.deleteMany({})
-    await Note.insertMany(testHelpers.initialNotes)
+    await User.deleteMany({})
+
+    // Create a user and log in to get a token
+    const user = {
+      username: 'testuser',
+      name: 'Test User',
+      password: 'password'
+    }
+    const createdUserResponse = await api.post('/api/users').send(user)
+    const createdUser = createdUserResponse.body
+
+    const loginRes = await api.post('/api/login').send({ username: user.username, password: user.password })
+    token = loginRes.body.token
+
+    // Create initial notes for this user
+    const notesWithUser = testHelpers.initialNotes.map(note => ({ ...note, user: createdUser.id }))
+    await Note.insertMany(notesWithUser)
   })
 
-  test('Notes are returned as json', async () => {
+  test('notes are returned as json', async () => {
     await api
       .get('/api/notes')
       .expect(200)
@@ -50,7 +69,9 @@ describe('when there is initially some notes saved', () => {
         .expect(200)
         .expect('Content-Type', /application\/json/)
 
-      assert.deepStrictEqual(resultNote.body, noteToView)
+      // The user property in noteToView is an ObjectId, while in the API response it's a string.
+      // JSON.stringify converts the ObjectId to a string, making the comparison pass.
+      assert.deepStrictEqual(resultNote.body, JSON.parse(JSON.stringify(noteToView)))
     })
 
     test('fails with statuscode 404 if note does not exist', async () => {
@@ -80,6 +101,7 @@ describe('when there is initially some notes saved', () => {
 
       await api
         .post('/api/notes')
+        .set('Authorization', `Bearer ${token}`)
         .send(newNote)
         .expect(201)
         .expect('Content-Type', /application\/json/)
@@ -91,6 +113,18 @@ describe('when there is initially some notes saved', () => {
       assert(contents.includes('async/await simplifies making async calls'))
     })
 
+    test('fails with status 401 if token is missing', async () => {
+      const newNote = {
+        content: 'this note will not be saved',
+        important: true,
+      }
+
+      await api
+        .post('/api/notes')
+        .send(newNote)
+        .expect(401)
+    })
+
     test('fails with status code 400 if data invalid', async () => {
       const newNote = {
         important: true
@@ -98,6 +132,7 @@ describe('when there is initially some notes saved', () => {
 
       await api
         .post('/api/notes')
+        .set('Authorization', `Bearer ${token}`)
         .send(newNote)
         .expect(400)
 
@@ -114,6 +149,7 @@ describe('when there is initially some notes saved', () => {
 
       await api
         .delete(`/api/notes/${noteToDelete.id}`)
+        .set('Authorization', `Bearer ${token}`)
         .expect(204)
 
       const notesAtEnd = await testHelpers.notesInDb()
