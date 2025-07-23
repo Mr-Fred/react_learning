@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 // Services
 import noteService from './services/notes'
 import loginService from './services/login'
+import userService from './services/users'
 
 // Ui components
 import Notification from './components/Notification'
 import Footer from './components/Footer'
-import { LoginForm, NoteForm } from './components/Forms'
+import { LoginForm, NoteForm, SignUpForm } from './components/Forms'
 import NotesList from './components/NoteList'
 import Togglable from './components/Togglable'
 
@@ -48,6 +49,21 @@ const App = () => {
       const returnedNote = await noteService.create(noteObject)
       setNotes(notes.concat(returnedNote))
       setErrorMessage('a new note successfully added')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    } catch (error) {
+      setErrorMessage(error.response.data.error)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+  }
+
+  const signUpApp = async (userObject) => {
+    try {
+      await userService.create(userObject)
+      setErrorMessage(`User ${userObject.username} created successfully! Please log in.`)
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -102,11 +118,18 @@ const App = () => {
 
       <Notification message={errorMessage} />
       {user === null ?
-        <Togglable buttonLabel="login">
-          <LoginForm
-            loginApp={loginApp}
-          />
-        </Togglable>
+        <div>
+          <Togglable buttonLabel="login">
+            <LoginForm
+              loginApp={loginApp}
+            />
+          </Togglable>
+          <Togglable buttonLabel="sign up">
+            <SignUpForm
+              signUpApp={signUpApp}
+            />
+          </Togglable>
+        </div>
         : <>
           <p>{user.username} logged-in</p> <button onClick={logoutApp}>logout</button>
           <br />

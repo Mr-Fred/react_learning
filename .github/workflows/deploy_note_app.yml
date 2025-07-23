@@ -20,10 +20,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4.0.3
         with:
           node-version: 20
           cache: 'npm'
@@ -71,16 +71,16 @@ jobs:
           SECRET: ${{ secrets.SECRET }}
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.3.4
         if: always()
         with:
           name: playwright-report
           path: part3/notes_fullstack/playwright-report/
-          retention-days: 30
+          retention-days: 10
 
       - name: Upload build artifact for deployment
         if: github.event_name == 'push'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4.3.4
         with:
           name: production-build
           path: part3/notes_fullstack/dist
@@ -95,17 +95,17 @@ jobs:
       id-token: 'write' # Required for Workload Identity Federation
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.7
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
           name: production-build
           path: part3/notes_fullstack/dist
 
       - name: Authenticate to Google Cloud
         id: auth
-        uses: 'google-github-actions/auth@v2'
+        uses: 'google-github-actions/auth@v2.1.3'
         with:
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_SA_EMAIL }}
@@ -125,3 +125,26 @@ jobs:
             --region ${{ env.REGION }} \
             --allow-unauthenticated \
             --set-env-vars "MONGODB_URI=${{ secrets.MONGODB_URI }},SECRET=${{ secrets.SECRET }}"
+
+  tag_release:
+    name: Tag Release
+    needs: [deploy]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: 'write' # Required to push new tags
+    # Skip tagging if the commit message contains #skip for push events on the target branch
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '#skip') }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.7
+
+      - name: Bump version and push tag
+        id: tag_version
+        uses: anothrNick/github-tag-action@1.73.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG_PREFIX: v
+          DEFAULT_BUMP: patch
+
+      - name: Log new tag
+        run: echo "New tag is ${{ steps.tag_version.outputs.tag }}"

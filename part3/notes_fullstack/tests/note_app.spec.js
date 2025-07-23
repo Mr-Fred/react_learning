@@ -25,6 +25,7 @@ test.describe('Note App', () => {
     await helpers.loginWith(page, 'mluukkai', 'salainen')
     await expect(page.getByText('mluukkai logged-in')).toBeVisible()
   })
+
   test('login fails with wrong password', async ({ page }) => {
     await helpers.loginWith(page, 'mluukkai', 'wrong')
 
@@ -32,6 +33,24 @@ test.describe('Note App', () => {
     await expect(errDiv).toContainText('wrong credentials')
     await expect(page.getByText('mluukkai logged-in')).not.toBeVisible()
   })
+
+  test('a new user can sign up and log in', async ({ page }) => {
+    await page.getByRole('button', { name: 'sign up' }).click()
+
+    await page.getByTestId('name').fill('Test User')
+    await page.getByTestId('username-signup').fill('testuser')
+    await page.getByTestId('password-signup').fill('password')
+
+    await page.getByRole('button', { name: 'Sign Up' }).click()
+
+    const successNotification = await page.locator('.error')
+    await expect(successNotification).toContainText('User testuser created successfully! Please log in.')
+    await expect(successNotification).toBeVisible()
+
+    await helpers.loginWith(page, 'testuser', 'password')
+    await expect(page.getByText('testuser logged-in')).toBeVisible()
+  })
+
   test.describe('when logged in', () => {
     test.beforeEach(async ({ page }) => {
       await helpers.loginWith(page, 'mluukkai', 'salainen')
