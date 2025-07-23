@@ -134,9 +134,14 @@ jobs:
       contents: 'write' # Required to push new tags
     # Skip tagging if the commit message contains #skip for push events on the target branch
     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '#skip') }}
+    outputs:
+      tag: ${{ steps.tag_version.outputs.tag }}
+      changelog: ${{ steps.tag_version.outputs.changelog }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.7
+        with:
+          fetch-depth: 0 # Required for changelog generation
 
       - name: Bump version and push tag
         id: tag_version
@@ -148,3 +153,53 @@ jobs:
 
       - name: Log new tag
         run: echo "New tag is ${{ steps.tag_version.outputs.tag }}"
+
+  create_release:
+    name: Create GitHub Release
+    needs: [tag_release]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: 'write' # Required to create a release
+    steps:
+      - name: Create GitHub Release
+        uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ needs.tag_release.outputs.tag }}
+          release_name: Release ${{ needs.tag_release.outputs.tag }}
+          body: ${{ needs.tag_release.outputs.changelog }}
+          draft: false
+          prerelease: false
+
+  notify:
+    name: Discord Notification
+    needs: [test, create_release]
+    runs-on: ubuntu-24.04
+    if: always() # This is key - it runs even if previous jobs fail
+    steps:
+      - name: Determine Status
+        id: status_check
+        run: |
+          if [[ "${{ needs.test.result }}" == "failure" || "${{ needs.create_release.result }}" == "failure" ]]; then
+            echo "status=failure" >> $GITHUB_OUTPUT
+            echo "color=15548997" >> $GITHUB_OUTPUT
+            echo "status_text=Failed" >> $GITHUB_OUTPUT
+          else
+            echo "status=success" >> $GITHUB_OUTPUT
+            echo "color=5763719" >> $GITHUB_OUTPUT
+            echo "status_text=Success" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Send Discord notification
+        uses: sarisia/actions-status-discord@v1.14.0
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ steps.status_check.outputs.status }}
+          title: "Pipeline for `${{ github.repository }}`"
+          description: |
+            Workflow **${{ github.workflow }}** has finished with status: **${{ steps.status_check.outputs.status_text }}**
+            Commit: `${{ github.sha }}` by `${{ github.actor }}`
+            View Workflow Run
+          color: ${{ steps.status_check.outputs.color }}
+          username: "GitHub Actions"
