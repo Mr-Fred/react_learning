@@ -59,6 +59,8 @@ out/
 .DS_Store
 Thumbs.db
 
+**/mongo_data/
+
 # Misc
 <<<<<<< HEAD
 *.local
