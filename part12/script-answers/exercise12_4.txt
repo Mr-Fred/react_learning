@@ -1,0 +1,3 @@
+apt-get install -y nodejs
+node index.js
+exit
