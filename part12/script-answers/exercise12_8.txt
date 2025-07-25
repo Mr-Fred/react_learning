@@ -1,0 +1,6 @@
+docker exec -it f5a91d8c33ffda01f9036980c6a6be7a868c6af85da51d62b71127146f8739dd  mongosh -u root -p example
+show dbs
+use the_database
+show collections
+db.todos.find({})
+db.todos.insertOne({text:'Increase the number of tools in my tool belt', done: false})
