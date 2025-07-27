@@ -22,3 +22,5 @@ part3/notes_fullstack/fly.toml
 # Env files
 .env
 part3/notes_fullstack/.env
+
+coverage

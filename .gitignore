@@ -60,11 +60,13 @@ out/
 Thumbs.db
 
 **/mongo_data/
+**/coverage/
 
 # Misc
-<<<<<<< HEAD
 *.local
 
-=======
-*.local 
->>>>>>> 53c7715 (fix(lint): Correct ESLint configuration and dependencies)
+# Ignore Docker-related files
+.dockerignore
+
+getting-started/
+scripts/
