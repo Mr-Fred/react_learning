@@ -1,9 +1,7 @@
-.dockerignore
-.gitignore
 node_modules
-Dockerfile
-coverage
 dist
-.eslintcache
-.env
 
+# Docker-related files
+Dockerfile*
+.dockerignore
+.git

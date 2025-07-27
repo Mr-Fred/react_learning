@@ -4,13 +4,17 @@ import PropTypes from 'prop-types'
 const TodoList = ({ todos, deleteTodo, completeTodo }) => {
   return (
     <>
-      {todos.map(todo => (
-        <Todo
-          key={todo._id}
-          todo={todo}
-          deleteTodo={deleteTodo}
-          completeTodo={completeTodo} />
-      ))}
+      {(Array.isArray(todos) && todos.length > 0)
+        ? todos.map(todo => (
+          <Todo
+            key={todo._id}
+            todo={todo}
+            deleteTodo={deleteTodo}
+            completeTodo={completeTodo}
+          />
+        ))
+        : <p>No todos available</p>
+      }
     </>
   )
 }
