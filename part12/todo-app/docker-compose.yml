@@ -1,44 +1,71 @@
 services:
-  todo-frontend:
-    build: ./todo-frontend
+  # This service builds the frontend, serves it with Nginx,
+  # and acts as a reverse proxy for the backend.
+  client:
+    build:
+      context: ./
+      dockerfile: Dockerfile.prod
+    image: todo-app-client-prod
     ports:
       - "8080:80"
     depends_on:
-      - todo-backend
+      server:
+        condition: service_healthy
+    restart: unless-stopped
 
-  todo-backend:
-    build: ./todo-backend
-    ports:
-      - "3000:3000"
+  # The backend service
+  server:
+    build:
+      context: ./todo-backend
+      dockerfile: Dockerfile
+    image: todo-app-server-prod
     environment:
-      - MONGO_URL=mongodb://root:example@mongo:27017/the_database?authSource=admin
-      - REDIS_URL=redis://:password@redis:6379
+      - MONGO_URL=mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongo:27017/${MONGO_DATABASE}?authSource=admin
+      - REDIS_URL=redis://:${REDIS_PASSWORD}@redis:6379
+      - NODE_ENV=production
     depends_on:
-      - mongo
-      - redis
+      mongo:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/healthz"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    restart: unless-stopped
 
+  # The database service
   mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
+    image: mongo:latest
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-      MONGO_INITDB_DATABASE: the_database
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
     volumes:
-      - ./todo-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
-      - mongo_data:/data/db
+      - mongo-data:/data/db
+      - ./todo-backend/mongo/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
 
+  # The redis cache service
   redis:
-    image: redis
-    command: ["redis-server", "--requirepass", "password"]
-    ports:
-      - "6379:6379"
+    image: redis:latest
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
-      - redis_data:/data
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
 
 volumes:
-  mongo_data:
-    driver: local
-  redis_data:
-    driver: local
+  mongo-data:
+  redis-data:
