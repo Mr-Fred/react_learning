@@ -1,6 +1,0 @@
-apt-get update
-apt-get install -y nano
-cd /usr/src/app
-nano index.js
-
-exit

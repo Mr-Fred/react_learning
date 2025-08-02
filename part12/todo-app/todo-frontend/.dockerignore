@@ -1,7 +1,0 @@
-node_modules
-dist
-
-# Docker-related files
-Dockerfile*
-.dockerignore
-.git

@@ -1,6 +1,0 @@
-docker exec -it redis-1 redis-cli
-AUTH password
-KEYS *
-GET added_todos
-SET "visits" 9001
-DEL visits
