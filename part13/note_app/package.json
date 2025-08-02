@@ -1,0 +1,33 @@
+{
+  "name": "note_psql_app",
+  "version": "1.0.0",
+  "description": "A note app that uses Progres SQL as database. fullstackopen course part13",
+  "keywords": [
+    "sql",
+    "express",
+    "web",
+    "node",
+    "prosges"
+  ],
+  "homepage": "https://github.com/Mr-Fred/react_learning/tree/part13_PosgreSQL#readme",
+  "bugs": {
+    "url": "https://github.com/Mr-Fred/react_learning/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mr-Fred/react_learning.git#part13_PosgreSQL"
+  },
+  "license": "ISC",
+  "author": "Mr-Fred",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7"
+  }
+}
