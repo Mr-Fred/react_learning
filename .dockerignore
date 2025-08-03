@@ -24,3 +24,5 @@ part3/notes_fullstack/fly.toml
 part3/notes_fullstack/.env
 
 coverage
+
+**/pgdata

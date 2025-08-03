@@ -70,3 +70,5 @@ Thumbs.db
 
 getting-started/
 scripts/
+
+**/pgdata

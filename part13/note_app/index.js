@@ -2,7 +2,9 @@ require('dotenv').config();
 const { Sequelize, Model, DataTypes} = require('sequelize');
 const express = require('express');
 
+
 const app = express();
+app.use(express.json());
 
 const sequelize = new Sequelize(process.env.DATABASE_URL);
 
@@ -30,6 +32,14 @@ Note.init({
   modelName: 'note'
 });
 
+const start = async () => {
+  await sequelize.sync({ alter: true });
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
 app.get('/api/notes', async function getAllNotes(req, res) {
   const notes = await Note.findAll();
   res.json(notes)
@@ -44,7 +54,4 @@ app.post('/api/notes', async function createNote (req, res) {
   }
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+start();
