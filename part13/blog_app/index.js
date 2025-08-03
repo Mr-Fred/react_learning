@@ -8,7 +8,7 @@
 const express = require('express');
 const {PORT} = require('./utils/config')
 const { requestLogger, info } = require('./middlewares/logger');
-const { connectToDatabase, sequelize } = require('./utils/db');
+const { connectToDatabase } = require('./utils/db');
 const blogRouter = require('./routes/blog');
 
 const app = express();
@@ -20,7 +20,6 @@ app.use('/api/blogs', blogRouter);
 
 const start = async () => {
   await connectToDatabase();
-  await sequelize.sync({ alter: true });
   app.listen(PORT, function logStatus(){
     info(`Server running on port ${PORT}`)
   })
