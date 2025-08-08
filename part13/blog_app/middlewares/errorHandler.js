@@ -1,22 +1,28 @@
 'use strict';
 
-/**
- * @fileoverview Centralized error handling middleware.
- */
+const { info, error } = require('./logger');
 
-const errorHandler = (error, req, res, next) => {
-  console.error(error.message);
+const errorHandler = (error, request, response, next) => {
+  info('--- Error Handler ---');
+  error('Error name:', error.name);
+  error('Error message:', error.message);
+  info('---');
 
-  // Handle Sequelize validation errors
   if (error.name === 'SequelizeValidationError') {
-    return res.status(400).json({ error: error.errors.map(e => e.message) });
-  } else if (error.name === 'SequelizeDatabaseError') {
-    // Handle malformed ID or other DB errors
-    return res.status(400).json({ error: 'A database error occurred. Please check your input.' });
+    return response.status(400).send({ error: error.errors.map(e => e.message) });
+  } else if (error.name === 'JsonWebTokenError') {
+    return response.status(401).json({ error: 'invalid token' });
+  } else if (error.name === 'SequelizeUniqueConstraintError') {
+    // Handle duplicate username or other unique constraint violations
+    return response.status(400).json({ error: error.errors.map(e => e.message) });
+  } else if (error.name === 'AuthorizationError') {
+    return response.status(403).json({ error: error.message });
   }
 
-  return next(error);
+  // Fallback for any other error
+  // Standard Error properties are not enumerable, so JSON.stringify(error) is just '{}'.
+  // We must explicitly extract the message.
+  return response.status(500).json({ error: error.message || 'An unexpected error occurred' });
 };
 
 module.exports = errorHandler;
-

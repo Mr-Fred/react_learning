@@ -1,7 +1,19 @@
 const Note = require('./note')
+const User = require('./user')
 
-Note.sync()
+
+User.hasMany(Note, {
+  foreignKey: {
+    allowNull: false
+  }
+})
+
+Note.belongsTo(User)
+
+Note.sync({alter: true})
+User.sync({alter: true})
 
 module.exports = {
-  Note
+  Note,
+  User
 }

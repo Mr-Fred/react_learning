@@ -21,6 +21,7 @@ const logFormat = combine(
 
 // Create the logger instance
 const logger = winston.createLogger({
+  level: 'http', // Set the minimum log level to 'http' to capture request logs
   levels,
   format: logFormat,
   transports: [new winston.transports.Console()],
