@@ -23,11 +23,27 @@ Blog.init({
   likes: {
     type: DataTypes.INTEGER,
     defaultValue: 0
-  }
+  },
+  year: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    validate: {
+      min: {
+        args: [1991],
+        msg: 'Year must be 1991 or later.'
+      },
+      isNotFuture(value) {
+        const currentYear = new Date().getFullYear();
+        if (parseInt(value) > currentYear) {
+          throw new Error(`Year cannot be in the future. Maximum allowed year is ${currentYear}.`);
+        }
+      },
+    },
+  },
 }, {
   sequelize,
   underscored: true,
-  timestamps: false,
+  timestamps: true,
   modelName: 'blog'
 });
 

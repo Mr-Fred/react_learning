@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 const { Blog, User } = require('../Models');
 const blogFinder = require('../middlewares/blogFinder');
 const auth = require('../middlewares/auth');
+const checkDisabled = require('../middlewares/checkDisabled');
 const { isAuthorizedUser } = require('../utils/helpers');
 
 const blogRouter = express.Router();
@@ -40,12 +41,12 @@ blogRouter.get('/', auth, async function getAllBlogs (req, res) {
   res.json(blogs);
 });
 
-blogRouter.post('/', auth, async function createBlog (req, res) {
+blogRouter.post('/', auth, checkDisabled, async function createBlog (req, res) {
   // req.user is the full user instance, attached by the auth middleware
   // The global errorHandler will catch validation errors, so try/catch is not needed here.
   const blog = await Blog.create({ ...req.body, userId: req.user.id });
   return res.json(blog);
-});
+ });
 
 blogRouter.delete('/:id', auth, blogFinder, async function deleteBlog (req, res) {
   // Let isAuthorizedUser throw an error, which will be caught by the errorHandler.
@@ -54,7 +55,7 @@ blogRouter.delete('/:id', auth, blogFinder, async function deleteBlog (req, res)
   return res.status(204).end();
 });
 
-blogRouter.put('/:id', auth, blogFinder, async function updateBlogLikes (req, res) {
+blogRouter.put('/:id', auth, checkDisabled, blogFinder, async function updateBlogLikes (req, res) {
   // Let isAuthorizedUser throw an error if not permitted.
   isAuthorizedUser(req.blog.userId, req.user.id);
 
@@ -67,7 +68,7 @@ blogRouter.put('/:id', auth, blogFinder, async function updateBlogLikes (req, re
   return res.status(400).json({ error: 'The "likes" property is required for an update' });
 });
 
-blogRouter.get('/:id', auth, blogFinder, async function getSingleBlog (req, res) {
+blogRouter.get('/:id', auth, checkDisabled, blogFinder, async function getSingleBlog (req, res) {
   // Let isAuthorizedUser throw an error, which will be caught by the errorHandler.
   isAuthorizedUser(req.blog.userId, req.user.id);
   return res.json(req.blog);

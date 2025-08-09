@@ -6,8 +6,6 @@ User.hasMany(Blog, {
 });
 Blog.belongsTo(User);
 
-// Sync all models at once. Sequelize will automatically create tables in the correct order.
-User.sequelize.sync({ alter: true });
 
 module.exports = {
   Blog,

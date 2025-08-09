@@ -22,7 +22,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "seed": "node utils/run_seeders.js",
+    "seed:undo": "node utils/rollback_seeders.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
@@ -32,9 +34,11 @@
     "morgan": "^1.10.1",
     "pg": "^8.16.3",
     "sequelize": "^6.37.7",
+    "umzug": "^3.8.2",
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "sequelize-cli": "^6.6.3"
   }
 }
