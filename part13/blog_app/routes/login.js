@@ -1,8 +1,7 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { User } = require('../Models');
-const {JWT_SECRET} = require('../utils/config');
+const auth = require('../middlewares/auth');
 
 const loginRouter = express.Router();
 
@@ -27,14 +26,23 @@ loginRouter.post('/login', async function login (req, res) {
     });
   }
 
-  const userForToken = {
-    username: user.username,
+  // Instead of creating a JWT, we establish a session.
+  req.session.user = {
     id: user.id,
+    username: user.username,
   };
 
-  const token = jwt.sign(userForToken, JWT_SECRET);
+  // The session cookie is sent automatically by express-session.
+  res.status(200).send({ username: user.username, name: user.name });
+});
 
-  res.status(200).send({ token, username: user.username, name: user.name });
+loginRouter.delete('/logout', auth, function logout (req, res, next) {
+  req.session.destroy((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.status(204).end();
+  });
 });
 
 loginRouter.post('/signup', async function signup (req, res) {

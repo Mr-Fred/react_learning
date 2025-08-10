@@ -6,12 +6,10 @@ User.hasMany(Blog, {
   foreignKey: { name: 'userId' }
 });
 Blog.belongsTo(User);
-
 User.belongsToMany(Blog, {
   through: ReadingList,
   as: 'readings' // This alias will be used in queries
 });
-
 Blog.belongsToMany(User, {
   through: ReadingList,
   as: 'users_reading'
@@ -20,5 +18,5 @@ Blog.belongsToMany(User, {
 module.exports = {
   Blog,
   User,
-  ReadingList
+  ReadingList,
 };

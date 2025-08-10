@@ -1,12 +1,11 @@
 const express = require('express');
 const { ReadingList } = require('../Models');
 const auth = require('../middlewares/auth');
-const checkDisabled = require('../middlewares/checkDisabled');
-const { AuthorizationError, NotFoundError } = require('../utils/errors');
+const { NotFoundError } = require('../utils/errors');
 
 const router = express.Router();
 
-router.use(auth, checkDisabled);
+router.use(auth);
 
 router.post('/', async (req, res) => {
   const { blogId } = req.body;

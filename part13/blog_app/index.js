@@ -6,9 +6,11 @@
 */
 
 const express = require('express');
-const {PORT} = require('./utils/config')
+const session = require('express-session');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
+const {PORT, SESSION_SECRET} = require('./utils/config')
 const { requestLogger, info } = require('./middlewares/logger');
-const { connectToDatabase } = require('./utils/db');
+const { connectToDatabase, sequelize } = require('./utils/db');
 const blogRouter = require('./routes/blogs');
 const loginRouter = require('./routes/login');
 const userRouter = require('./routes/users');
@@ -21,6 +23,23 @@ const app = express();
 
 app.use(express.json());
 app.use(requestLogger);
+
+// Initialize session store
+const sessionStore = new SequelizeStore({
+  db: sequelize,
+});
+
+// Sync the session store table
+sessionStore.sync();
+
+app.use(session({
+  secret: SESSION_SECRET,
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 * 24 } // 24 hours
+}));
+
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Blog API');

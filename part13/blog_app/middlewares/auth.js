@@ -1,24 +1,34 @@
-const jwt = require('jsonwebtoken');
-const {JWT_SECRET} = require('../utils/config');
-const { User } = require('../Models');
+'use strict';
 
-const auth = async function auth(req, res, next) {
-  const authorization = req.get('authorization');
-  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
-    try {
-      const decodedToken = jwt.verify(authorization.substring(7), JWT_SECRET);
-      req.user = await User.findByPk(decodedToken.id);
-      if (!req.user) {
-        return res.status(401).json({ error: 'token invalid' });
-      }
-    } catch (error) {
-      return res.status(401).json({ error: 'token invalid' });
-    }
-  } else {
-    return res.status(401).json({ error: 'token missing' });
+const { User } = require('../Models');
+const { AuthorizationError } = require('../utils/errors');
+
+const auth = async (req, res, next) => {
+  if (!req.session?.user?.id) {
+    return res.status(401).json({ error: 'Not authenticated. Please log in.' });
   }
 
-  next();
+  try {
+    const user = await User.findByPk(req.session.user.id);
+
+    if (!user) {
+      const err = new AuthorizationError('User not found for this session.');
+      // Destroy the invalid session and then pass the error to the handler
+      return req.session.destroy(() => next(err));
+    }
+
+    if (user.disabled) {
+      const err = new AuthorizationError('Account disabled, please contact admin. You have been logged out.');
+      // Destroy the session for the disabled user and then pass the error
+      return req.session.destroy(() => next(err));
+    }
+
+    // Attach the full, current user object to the request
+    req.user = user;
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 module.exports = auth;

@@ -1,16 +1,14 @@
 const express = require('express');
 
 const { User, Blog } = require('../Models');
-const checkDisabled = require('../middlewares/checkDisabled');
 const userFinder = require('../middlewares/userFinder');
 const auth = require('../middlewares/auth');
 const adminOnly = require('../middlewares/adminOnly');
 const { isAuthorizedUser } = require('../utils/helpers');
 
- 
 const userRouter = express.Router();
 
-userRouter.use(auth, checkDisabled);
+userRouter.use(auth);
 userRouter.use('/:username', userFinder);
 
 userRouter.put('/:username', async function updateUser (req, res) {

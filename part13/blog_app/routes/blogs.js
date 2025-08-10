@@ -3,12 +3,11 @@ const { Op } = require('sequelize');
 const { Blog, User } = require('../Models');
 const blogFinder = require('../middlewares/blogFinder');
 const auth = require('../middlewares/auth');
-const checkDisabled = require('../middlewares/checkDisabled');
 const { isAuthorizedUser } = require('../utils/helpers');
 
 const blogRouter = express.Router();
 
-blogRouter.use(auth, checkDisabled);
+blogRouter.use(auth);
 blogRouter.use('/:id', blogFinder);
 
 blogRouter.get('/', async function getAllBlogs (req, res) {

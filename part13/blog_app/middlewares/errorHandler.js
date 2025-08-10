@@ -10,8 +10,6 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'SequelizeValidationError') {
     return response.status(400).send({ error: error.errors.map(e => e.message) });
-  } else if (error.name === 'JsonWebTokenError') {
-    return response.status(401).json({ error: 'invalid token' });
   } else if (error.name === 'SequelizeUniqueConstraintError') {
     // Handle duplicate username or other unique constraint violations
     return response.status(400).json({ error: error.errors.map(e => e.message) });
