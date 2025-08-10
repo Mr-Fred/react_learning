@@ -8,7 +8,10 @@ const { isAuthorizedUser } = require('../utils/helpers');
 
 const blogRouter = express.Router();
 
-blogRouter.get('/', auth, async function getAllBlogs (req, res) {
+blogRouter.use(auth, checkDisabled);
+blogRouter.use('/:id', blogFinder);
+
+blogRouter.get('/', async function getAllBlogs (req, res) {
   let where = {};
 
   if (req.query.search) {
@@ -41,21 +44,21 @@ blogRouter.get('/', auth, async function getAllBlogs (req, res) {
   res.json(blogs);
 });
 
-blogRouter.post('/', auth, checkDisabled, async function createBlog (req, res) {
-  // req.user is the full user instance, attached by the auth middleware
-  // The global errorHandler will catch validation errors, so try/catch is not needed here.
-  const blog = await Blog.create({ ...req.body, userId: req.user.id });
-  return res.json(blog);
- });
-
-blogRouter.delete('/:id', auth, blogFinder, async function deleteBlog (req, res) {
+blogRouter.delete('/:id', async function deleteBlog (req, res) {
   // Let isAuthorizedUser throw an error, which will be caught by the errorHandler.
   isAuthorizedUser(req.blog.userId, req.user.id);
   await req.blog.destroy();
   return res.status(204).end();
 });
 
-blogRouter.put('/:id', auth, checkDisabled, blogFinder, async function updateBlogLikes (req, res) {
+blogRouter.post('/', async function createBlog (req, res) {
+  // req.user is the full user instance, attached by the auth middleware
+  // The global errorHandler will catch validation errors, so try/catch is not needed here.
+  const blog = await Blog.create({ ...req.body, userId: req.user.id });
+  return res.json(blog);
+ });
+
+blogRouter.put('/:id', async function updateBlogLikes (req, res) {
   // Let isAuthorizedUser throw an error if not permitted.
   isAuthorizedUser(req.blog.userId, req.user.id);
 
@@ -68,7 +71,7 @@ blogRouter.put('/:id', auth, checkDisabled, blogFinder, async function updateBlo
   return res.status(400).json({ error: 'The "likes" property is required for an update' });
 });
 
-blogRouter.get('/:id', auth, checkDisabled, blogFinder, async function getSingleBlog (req, res) {
+blogRouter.get('/:id', async function getSingleBlog (req, res) {
   // Let isAuthorizedUser throw an error, which will be caught by the errorHandler.
   isAuthorizedUser(req.blog.userId, req.user.id);
   return res.json(req.blog);
