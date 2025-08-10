@@ -32,38 +32,45 @@ router.post('/', async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
+  const include = [
+    {
+      model: Note, // Notes created by the user
+      attributes: { exclude: ['userId'] }
+    },
+    {
+      model: Note,
+      as: 'marked_notes', // Notes marked by the user
+      attributes: { exclude: ['userId']},
+      through: {
+        attributes: []
+      },
+      include: {
+        model: User, // The original author of the marked note
+        attributes: ['name']
+      }
+    }
+  ];
+
+  // Conditionally add the Team include to the main query
+  if (req.query.teams) {
+    include.push({
+      model: Team,
+      attributes: ['name'],
+      through: {
+        attributes: []
+      }
+    });
+  }
+
   const user = await User.findByPk(req.params.id, {
-    attributes: { exclude: [''] } ,
-    include:[{
-        model: Note,
-        attributes: { exclude: ['userId'] }
-      },
-      {
-        model: Note,
-        as: 'marked_notes',
-        attributes: { exclude: ['userId']},
-        through: {
-          attributes: []
-        },
-        include: {
-          model: User,
-          attributes: ['name']
-        }
-      },
-      {
-        model: Team,
-        attributes: ['name', 'id'],
-        through: {
-          attributes: []
-        }
-      },
-    ]
-  })
+    attributes: { exclude: ['passwordHash'] }, // Correctly exclude sensitive data
+    include
+  });
 
   if (user) {
-    res.json(user)
+    res.json(user); // The 'teams' property is now part of the user object if requested
   } else {
-    res.status(404).end()
+    res.status(404).end();
   }
 })
 

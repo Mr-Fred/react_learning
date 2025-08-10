@@ -98,7 +98,7 @@ router.put('/:id', noteFinder, async function updateNoteById(req, res) {
 })
 
 router.put('/:username', tokenExtractor, isAdmin, async (req, res) => {
-  const user = await User.findOne({
+  const user = await User.unscoped().findOne({
     where: {
       username: req.params.username
     }
